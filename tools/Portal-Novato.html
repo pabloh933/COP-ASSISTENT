@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COP REDE PRO</title>
+
+<style>
+:root{
+    --bg:#0f172a;
+    --bg-header:#020617;
+    --card:#1e293b;
+    --border:#334155;
+    --txt:#e5e7eb;
+    --primary:#60a5fa;
+    --muted:#94a3b8;
+}
+
+*{ box-sizing:border-box }
+
+body{
+    margin:0;
+    font-family:Segoe UI, system-ui;
+    background:var(--bg);
+    color:var(--txt);
+}
+
+/* HEADER */
+header{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:15px 20px;
+    background:var(--bg-header);
+    border-bottom:1px solid var(--border);
+}
+
+header h1{
+    font-size:18px;
+    color:var(--primary);
+    margin:0;
+}
+
+header small{
+    color:var(--muted);
+    font-size:11px;
+}
+
+/* SEARCH */
+.search{
+    width:280px;
+    padding:8px 10px;
+    border-radius:8px;
+    border:none;
+    outline:none;
+}
+
+/* INFO BAR */
+.info-bar{
+    padding:10px 20px;
+    font-size:14px;
+}
+
+.info-bar span{
+    margin-right:12px;
+    cursor:pointer;
+    color:var(--primary);
+}
+
+/* GRID */
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit, minmax(240px,1fr));
+    gap:15px;
+    padding:20px;
+}
+
+/* CARD */
+.card{
+    background:var(--card);
+    padding:20px;
+    border-radius:12px;
+    border:1px solid var(--border);
+    cursor:pointer;
+    transition:.2s;
+    position:relative;
+}
+
+.card:hover{ transform:scale(1.03); }
+
+.card small{
+    color:var(--muted);
+    font-size:12px;
+}
+
+/* STAR */
+.star{
+    position:absolute;
+    top:10px;
+    right:10px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+.star.ativo{ color:gold; }
+
+/* TELA */
+.tela{
+    display:none;
+    padding:20px;
+}
+
+.voltar{
+    cursor:pointer;
+    color:var(--primary);
+    margin-bottom:15px;
+}
+
+/* BLOCO */
+.bloco{
+    background:var(--card);
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:15px;
+}
+
+/* ETAPAS */
+.etapas li{ margin-bottom:8px; }
+
+/* BUTTON */
+button{
+    background:var(--primary);
+    border:none;
+    padding:10px 15px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+/* PRE */
+pre{
+    background:var(--bg-header);
+    padding:15px;
+    border-radius:10px;
+    white-space:pre-wrap;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+    <div>
+        <h1>📡 COP REDE PRO</h1>
+        <small>Versão 1.0 • Base de Procedimentos</small>
+    </div>
+    <input class="search" placeholder="Buscar procedimento..." onkeyup="buscar(this.value)">
+</header>
+
+<div class="info-bar" id="info"></div>
+
+<div id="menu" class="grid"></div>
+<div id="tela" class="tela"></div>
+
+<script>
+// ================= BASE =================
+const procedimentos = [
+{
+id:"conjunta",
+nome:"📡 Conjunta",
+categoria:"Solicitação",
+desc:"Solicitação conjunta",
+conteudo:`<h2>📡 Conjunta</h2>
+<div class="bloco">
+<b>O que solicitar:</b>
+<ul>
+<li>Ponta</li>
+<li>Data / Hora</li>
+<li>Equipe</li>
+</ul>
+</div>
+<div class="bloco">
+<b>Etapas:</b>
+<ol class="etapas">
+<li>Preencher máscara</li>
+<li>Abrir RAL</li>
+<li>Atualizar item</li>
+</ol>
+</div>
+<div class="bloco">
+<pre id="txt">
+REGIONAL CLARO SOLICITA CONJUNTA
+MOTIVO: MONITORAÇÃO E IDENTIFICAÇÃO DE FIBRAS
+PONTA:
+DATA/HORA:
+CONTATO EQUIPE:
+</pre>
+<button onclick="copiar()">Copiar texto</button>
+</div>`
+},
+{
+id:"acesso",
+nome:"🔑 Acesso Cliente",
+categoria:"Atendimento",
+desc:"Liberação de acesso",
+conteudo:`<h2>🔑 Acesso Cliente</h2>
+<div class="bloco">
+<ol class="etapas">
+<li><input type="checkbox"> Validar contato</li>
+<li><input type="checkbox"> Confirmar endereço</li>
+<li><input type="checkbox"> Verificar janela</li>
+<li><input type="checkbox"> Acionar equipe</li>
+<li><input type="checkbox"> Registrar sistema</li>
+</ol>
+</div>`
+},
+{
+id:"queda",
+nome:"📉 Verificar Tecnologia",
+categoria:"Incidente",
+desc:"Diagnóstico de indisponibilidade",
+conteudo:`<h2>📉 Verificar Tecnologia</h2>
+<div class="bloco">
+<ol class="etapas">
+<li><input type="checkbox"> TELLABS --- 6325;6320;6340;7100. </li>
+<li><input type="checkbox"> LUCENT --- AMS ;AMU;ADMU;LU. </li>
+<li><input type="checkbox"> ALCATEL ACESSO --- 1641;1651;1664;1686;1661;1631FOX. </li>
+<li><input type="checkbox"> ALCATEL NET --- 1642;1660;1662,1678 </li>
+<li><input type="checkbox"> ALCATEL DWDM --- 1696;1626</li>
+<li><input type="checkbox"> DATACOM --- DMSTM1; DM4001;DM4004;DM2104;DM705;DM16E1;DM3000 </li>
+<li><input type="checkbox"> METRO ETHERNET --- 3750;7609;3600;7606 </li>
+<li><input type="checkbox"> PADTAC --- L1600;L16ROD;TCX12;L64ROD;TCX22 </li>
+<li><input type="checkbox"> GPON --- F621;F600;C220;C320 </li>
+<li><input type="checkbox"> MARCONI --- M3T </li>
+<li><input type="checkbox"> CIENA --- 5430;5400 </li>
+<li><input type="checkbox"> TELMEX ANEL --- RB0001RJ ; BRRJO</li>
+
+</ol>
+</div>`
+}
+];
+
+// ================= RENDER =================
+function render(lista){
+    const menu = document.getElementById("menu");
+    const fav = JSON.parse(localStorage.getItem("fav") || "[]");
+    menu.innerHTML = "";
+
+    lista.forEach(p=>{
+        const ativo = fav.includes(p.id) ? "ativo" : "";
+        menu.innerHTML += `
+        <div class="card" onclick="abrir('${p.id}')">
+            <div class="star ${ativo}" onclick="favoritar('${p.id}',event)">⭐</div>
+            <h3>${p.nome}</h3>
+            <small>${p.categoria}</small>
+            <p>${p.desc}</p>
+        </div>`;
+    });
+}
+render(procedimentos);
+
+// ================= ABRIR =================
+function abrir(id){
+    salvarHistorico(id);
+    const proc = procedimentos.find(p=>p.id===id);
+    document.getElementById("menu").style.display="none";
+    const tela = document.getElementById("tela");
+    tela.style.display="block";
+    tela.innerHTML = `<div class="voltar" onclick="voltar()">⬅ Voltar</div>` + proc.conteudo;
+    atualizarBarra();
+}
+
+function voltar(){
+    document.getElementById("menu").style.display="grid";
+    document.getElementById("tela").style.display="none";
+}
+
+// ================= BUSCA =================
+function buscar(txt){
+    txt = txt.toLowerCase();
+    render(procedimentos.filter(p =>
+        p.nome.toLowerCase().includes(txt) ||
+        p.desc.toLowerCase().includes(txt) ||
+        p.categoria.toLowerCase().includes(txt)
+    ));
+}
+
+// ================= COPIAR =================
+function copiar(){
+    navigator.clipboard.writeText(document.getElementById("txt").innerText);
+    alert("Texto copiado!");
+}
+
+// ================= FAVORITOS =================
+function favoritar(id,e){
+    e.stopPropagation();
+    let fav = JSON.parse(localStorage.getItem("fav") || "[]");
+    fav.includes(id) ? fav = fav.filter(f=>f!==id) : fav.push(id);
+    localStorage.setItem("fav", JSON.stringify(fav));
+    render(procedimentos);
+    atualizarBarra();
+}
+
+// ================= HISTÓRICO =================
+function salvarHistorico(id){
+    let h = JSON.parse(localStorage.getItem("hist") || "[]");
+    h = h.filter(x=>x!==id);
+    h.unshift(id);
+    localStorage.setItem("hist", JSON.stringify(h.slice(0,5)));
+}
+
+// ================= INFO BAR =================
+function atualizarBarra(){
+    const info = document.getElementById("info");
+    const fav = JSON.parse(localStorage.getItem("fav") || "[]");
+    const hist = JSON.parse(localStorage.getItem("hist") || "[]");
+    info.innerHTML = "";
+
+    if(fav.length){
+        info.innerHTML += "<b>⭐ Favoritos:</b> ";
+        fav.forEach(id=>{
+            const p = procedimentos.find(x=>x.id===id);
+            info.innerHTML += `<span onclick="abrir('${id}')">${p.nome}</span>`;
+        });
+    }
+
+    if(hist.length){
+        info.innerHTML += "<br><b>🕒 Últimos:</b> ";
+        hist.forEach(id=>{
+            const p = procedimentos.find(x=>x.id===id);
+            info.innerHTML += `<span onclick="abrir('${id}')">${p.nome}</span>`;
+        });
+    }
+}
+atualizarBarra();
+</script>
+
+</body>
+</html>
