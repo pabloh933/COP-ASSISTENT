@@ -255,10 +255,7 @@ footer a{color:#fdba74;cursor:pointer;text-decoration:underline;margin:0 4px}
    (o repositório precisa ser PÚBLICO para o site conseguir ler o arquivo)
    ===================================================================== */
 const CONFIG = {
-    usuario:     "pabloh933",
-    repositorio: "COP-ASSISTENT",
-    branch:      "main",
-    arquivo:     "Dados/dados.json"
+    urlBase: "https://raw.githubusercontent.com/pabloh933/COP-ASSISTENT/main/Dados/dados.json"
 };
 
 /* ===== UTILITÁRIOS ===== */
@@ -275,15 +272,13 @@ let CF={},REG={},BASE=[],BAIRROS=[],META={},FONTE="";
 let filtro="all",atuais=[],ativo=-1,cards=[],mostrando=0,pronto=false,total=0,cfHtml="";
 
 /* ===== FONTES DA BASE: local (mesma pasta/Pages) → GitHub raw → jsDelivr ===== */
-function fontes(){
-  const l=[];
-  if(location.protocol.startsWith("http")) l.push({nome:"servidor local",url:CONFIG.arquivo});
-  if(CONFIG.usuario && !/^SEU_/.test(CONFIG.usuario)){
-    const {usuario:u,repositorio:r,branch:b,arquivo:a}=CONFIG;
-    l.push({nome:"GitHub",url:`https://raw.githubusercontent.com/${u}/${r}/${b}/${a}`});
-    l.push({nome:"jsDelivr (espelho do GitHub)",url:`https://cdn.jsdelivr.net/gh/${u}/${r}@${b}/${a}`});
-  }
-  return l;
+function fontes() {
+    return [
+        {
+            nome: "GitHub Raw",
+            url: CONFIG.urlBase
+        }
+    ];
 }
 
 /* cache offline em IndexedDB */
