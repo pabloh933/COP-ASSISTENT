@@ -1,0 +1,1195 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>COP Smart Analyzer</title>
+
+<style>
+
+:root {
+    --bg: #dcdcdc;
+    --dark: #020817;
+    --panel: #334155;
+    --primary: #2563eb;
+    --danger: #dc2626;
+    --danger-hover: #b91c1c;
+    --border: #d1d5db;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: var(--bg);
+    font-family: Arial, Helvetica, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* =========================
+   CABEÇALHO
+========================= */
+
+header {
+    background: var(--dark);
+    color: white;
+    padding: 15px;
+    border-bottom: 3px solid var(--primary);
+}
+
+header h1 {
+    margin-bottom: 12px;
+}
+
+.toolbar {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+input {
+    height: 40px;
+    width: 280px;
+    padding: 0 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    outline: none;
+    font-size: 14px;
+}
+
+input:focus {
+    border-color: var(--primary);
+}
+
+button {
+    height: 40px;
+    padding: 0 15px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    opacity: .9;
+}
+
+/* =========================
+   PAINÉIS
+========================= */
+
+.frames {
+    flex: 1;
+    display: flex;
+    min-height: 0;
+}
+
+.panel {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    border-right: 1px solid #999;
+}
+
+.panel:last-child {
+    border-right: none;
+}
+
+.titulo {
+    background: var(--panel);
+    color: white;
+    text-align: center;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: white;
+}
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+#historicoModal {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, .55);
+    z-index: 9999;
+    padding: 20px;
+}
+
+.modal-content {
+    width: 620px;
+    max-width: 95%;
+    max-height: 85vh;
+    overflow: auto;
+    background: white;
+    margin: 20px auto;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.modal-header h2 {
+    font-size: 22px;
+}
+
+.btnFecharX {
+    background: transparent;
+    color: #555;
+    font-size: 22px;
+    padding: 0;
+    width: 40px;
+}
+
+.btnFecharX:hover {
+    background: #eee;
+}
+
+#contadorHistorico {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 15px;
+}
+
+#listaHistorico {
+    margin-bottom: 5px;
+}
+
+.itemHistorico {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 12px;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: .2s;
+    background: white;
+}
+
+.itemHistorico:hover {
+    background: #f8fafc;
+    border-color: var(--primary);
+}
+
+.itemHistoricoConteudo {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+}
+
+.equipamentosHistorico {
+    flex: 1;
+    min-width: 0;
+}
+
+.equipamentosHistorico strong {
+    color: #0f172a;
+}
+
+.dataHistorico {
+    color: #64748b;
+    font-size: 12px;
+    display: inline-block;
+    margin-top: 5px;
+}
+
+.btnExcluir {
+    background: var(--danger);
+    width: 40px;
+    min-width: 40px;
+    padding: 0;
+    font-size: 17px;
+}
+
+.btnExcluir:hover {
+    background: var(--danger-hover);
+    opacity: 1;
+}
+
+.historicoVazio {
+    text-align: center;
+    padding: 30px 10px;
+    color: #64748b;
+}
+
+.footerModal {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.btnDanger {
+    background: var(--danger);
+}
+
+.btnDanger:hover {
+    background: var(--danger-hover);
+    opacity: 1;
+}
+
+/* =========================
+   RESPONSIVIDADE
+========================= */
+
+@media (max-width: 1200px) {
+
+    .frames {
+        flex-direction: column;
+    }
+
+    .panel {
+        width: 100%;
+        height: 50%;
+        border-right: none;
+        border-bottom: 1px solid #999;
+    }
+
+    .panel:last-child {
+        border-bottom: none;
+    }
+
+}
+
+@media (max-width: 650px) {
+
+    input {
+        width: 100%;
+    }
+
+    .toolbar {
+        align-items: stretch;
+    }
+
+    .toolbar button {
+        flex: 1;
+    }
+
+    .modal-content {
+        padding: 15px;
+    }
+
+    .footerModal {
+        flex-direction: column;
+    }
+
+    .footerModal button {
+        width: 100%;
+    }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- =========================
+     CABEÇALHO
+========================= -->
+
+<header>
+
+    <h1>🚀 COP Smart Analyzer</h1>
+
+    <div class="toolbar">
+
+        <input
+            type="text"
+            id="eq1"
+            placeholder="Equipamento A"
+            autocomplete="off">
+
+        <input
+            type="text"
+            id="eq2"
+            placeholder="Equipamento B"
+            autocomplete="off">
+
+        <button onclick="abrirAmbos()">
+            Abrir Ambos
+        </button>
+
+        <button
+            onclick="inverterEquipamentos()"
+            title="Inverter Equipamento A e B">
+            ⇄ Inverter
+        </button>
+
+        <button onclick="mostrarHistorico()">
+            📜 Histórico
+        </button>
+
+        <button onclick="limparTudo()">
+            Limpar
+        </button>
+
+    </div>
+
+</header>
+
+
+<!-- =========================
+     EQUIPAMENTOS
+========================= -->
+
+<div class="frames">
+
+    <!-- EQUIPAMENTO A -->
+
+    <div class="panel">
+
+        <div
+            class="titulo"
+            id="tituloA">
+            Equipamento A
+        </div>
+
+        <iframe
+            id="frameA"
+            title="Equipamento A">
+        </iframe>
+
+    </div>
+
+
+    <!-- EQUIPAMENTO B -->
+
+    <div class="panel">
+
+        <div
+            class="titulo"
+            id="tituloB">
+            Equipamento B
+        </div>
+
+        <iframe
+            id="frameB"
+            title="Equipamento B">
+        </iframe>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL HISTÓRICO
+========================= -->
+
+<div id="historicoModal">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+
+            <h2>
+                📜 Histórico de Consultas
+            </h2>
+
+            <button
+                class="btnFecharX"
+                onclick="fecharHistorico()"
+                title="Fechar">
+                ✕
+            </button>
+
+        </div>
+
+        <div id="contadorHistorico">
+            0 consultas
+        </div>
+
+        <div id="listaHistorico"></div>
+
+        <div class="footerModal">
+
+            <button
+                class="btnDanger"
+                id="btnLimparHistorico"
+                onclick="limparHistoricoCompleto()">
+                🗑️ Limpar todo o histórico
+            </button>
+
+            <button onclick="fecharHistorico()">
+                Fechar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<script>
+
+/* =========================
+   CONFIGURAÇÃO
+========================= */
+
+const URL_GRBS =
+"http://www-grbs.embratel.net.br/grb/topologia_rede/www/executar_comandos_ssh.php?arg0=_%5DC%3C%3B%3DC%40%3BA&id_rede=33&eqpto=";
+
+const CHAVE_HISTORICO = "historicoCOP";
+
+const LIMITE_HISTORICO = 20;
+
+
+/* =========================
+   ABRIR EQUIPAMENTOS
+========================= */
+
+function abrirAmbos() {
+
+    const equipamentoA =
+        document
+        .getElementById("eq1")
+        .value
+        .trim();
+
+    const equipamentoB =
+        document
+        .getElementById("eq2")
+        .value
+        .trim();
+
+
+    if (!equipamentoA || !equipamentoB) {
+
+        alert("Informe os dois equipamentos.");
+
+        return;
+
+    }
+
+
+    document
+        .getElementById("tituloA")
+        .innerText = equipamentoA;
+
+
+    document
+        .getElementById("tituloB")
+        .innerText = equipamentoB;
+
+
+    document
+        .getElementById("frameA")
+        .src =
+        URL_GRBS +
+        encodeURIComponent(equipamentoA);
+
+
+    document
+        .getElementById("frameB")
+        .src =
+        URL_GRBS +
+        encodeURIComponent(equipamentoB);
+
+
+    salvarHistorico(
+        equipamentoA,
+        equipamentoB
+    );
+
+}
+
+
+/* =========================
+   INVERTER
+========================= */
+
+function inverterEquipamentos() {
+
+    const campoA =
+        document.getElementById("eq1");
+
+    const campoB =
+        document.getElementById("eq2");
+
+
+    const equipamentoA =
+        campoA.value;
+
+    const equipamentoB =
+        campoB.value;
+
+
+    campoA.value =
+        equipamentoB;
+
+    campoB.value =
+        equipamentoA;
+
+}
+
+
+/* =========================
+   HISTÓRICO
+========================= */
+
+function carregarHistorico() {
+
+    try {
+
+        const dados =
+            localStorage.getItem(
+                CHAVE_HISTORICO
+            );
+
+        if (!dados) {
+            return [];
+        }
+
+
+        const historico =
+            JSON.parse(dados);
+
+
+        if (!Array.isArray(historico)) {
+            return [];
+        }
+
+
+        return historico;
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao carregar histórico:",
+            erro
+        );
+
+        return [];
+
+    }
+
+}
+
+
+/* =========================
+   SALVAR HISTÓRICO
+========================= */
+
+function salvarHistorico(eqA, eqB) {
+
+    let historico =
+        carregarHistorico();
+
+
+    /*
+        Evita duplicar a consulta
+        caso ela seja exatamente igual
+        à última consulta realizada.
+    */
+
+    if (
+        historico.length > 0 &&
+        historico[0].eqA === eqA &&
+        historico[0].eqB === eqB
+    ) {
+
+        return;
+
+    }
+
+
+    historico.unshift({
+
+        eqA: eqA,
+
+        eqB: eqB,
+
+        data:
+            new Date()
+            .toLocaleString("pt-BR")
+
+    });
+
+
+    /*
+        Mantém somente os registros
+        mais recentes.
+    */
+
+    historico =
+        historico.slice(
+            0,
+            LIMITE_HISTORICO
+        );
+
+
+    localStorage.setItem(
+
+        CHAVE_HISTORICO,
+
+        JSON.stringify(historico)
+
+    );
+
+}
+
+
+/* =========================
+   MOSTRAR HISTÓRICO
+========================= */
+
+function mostrarHistorico() {
+
+    const lista =
+        document.getElementById(
+            "listaHistorico"
+        );
+
+    const contador =
+        document.getElementById(
+            "contadorHistorico"
+        );
+
+    const btnLimpar =
+        document.getElementById(
+            "btnLimparHistorico"
+        );
+
+
+    const historico =
+        carregarHistorico();
+
+
+    lista.innerHTML = "";
+
+
+    /*
+        CONTADOR
+    */
+
+    const total =
+        historico.length;
+
+
+    contador.textContent =
+        total === 1
+        ? "1 consulta salva"
+        : `${total} consultas salvas`;
+
+
+    /*
+        HISTÓRICO VAZIO
+    */
+
+    if (total === 0) {
+
+        lista.innerHTML =
+            `
+            <div class="historicoVazio">
+
+                Nenhuma consulta
+                encontrada no histórico.
+
+            </div>
+            `;
+
+
+        btnLimpar.style.display =
+            "none";
+
+    }
+
+    else {
+
+        btnLimpar.style.display =
+            "inline-block";
+
+
+        historico.forEach(
+            (item, index) => {
+
+
+                const div =
+                    document
+                    .createElement("div");
+
+
+                div.className =
+                    "itemHistorico";
+
+
+                /*
+                    Conteúdo principal
+                */
+
+                const conteudo =
+                    document
+                    .createElement("div");
+
+
+                conteudo.className =
+                    "itemHistoricoConteudo";
+
+
+                /*
+                    Equipamentos
+                */
+
+                const equipamentos =
+                    document
+                    .createElement("div");
+
+
+                equipamentos.className =
+                    "equipamentosHistorico";
+
+
+                const equipamentoA =
+                    document
+                    .createElement("strong");
+
+
+                equipamentoA.textContent =
+                    item.eqA;
+
+
+                const separador =
+                    document
+                    .createTextNode(" ↔ ");
+
+
+                const equipamentoB =
+                    document
+                    .createElement("strong");
+
+
+                equipamentoB.textContent =
+                    item.eqB;
+
+
+                const quebra =
+                    document
+                    .createElement("br");
+
+
+                const data =
+                    document
+                    .createElement("span");
+
+
+                data.className =
+                    "dataHistorico";
+
+
+                data.textContent =
+                    item.data || "";
+
+
+                equipamentos.appendChild(
+                    equipamentoA
+                );
+
+                equipamentos.appendChild(
+                    separador
+                );
+
+                equipamentos.appendChild(
+                    equipamentoB
+                );
+
+                equipamentos.appendChild(
+                    quebra
+                );
+
+                equipamentos.appendChild(
+                    data
+                );
+
+
+                /*
+                    BOTÃO LIXEIRA
+                */
+
+                const botaoExcluir =
+                    document
+                    .createElement("button");
+
+
+                botaoExcluir.className =
+                    "btnExcluir";
+
+
+                botaoExcluir.type =
+                    "button";
+
+
+                botaoExcluir.title =
+                    "Excluir esta consulta";
+
+
+                botaoExcluir.textContent =
+                    "🗑️";
+
+
+                /*
+                    Exclusão individual
+                */
+
+                botaoExcluir
+                    .addEventListener(
+                        "click",
+                        function(event) {
+
+                            event
+                                .stopPropagation();
+
+                            excluirHistorico(
+                                index
+                            );
+
+                        }
+                    );
+
+
+                conteudo.appendChild(
+                    equipamentos
+                );
+
+                conteudo.appendChild(
+                    botaoExcluir
+                );
+
+
+                div.appendChild(
+                    conteudo
+                );
+
+
+                /*
+                    Clicar no registro
+                    abre novamente a consulta.
+                */
+
+                div.addEventListener(
+                    "click",
+                    function() {
+
+                        document
+                            .getElementById(
+                                "eq1"
+                            )
+                            .value =
+                            item.eqA;
+
+
+                        document
+                            .getElementById(
+                                "eq2"
+                            )
+                            .value =
+                            item.eqB;
+
+
+                        fecharHistorico();
+
+
+                        abrirAmbos();
+
+                    }
+                );
+
+
+                lista.appendChild(
+                    div
+                );
+
+            }
+        );
+
+    }
+
+
+    document
+        .getElementById(
+            "historicoModal"
+        )
+        .style
+        .display =
+        "block";
+
+}
+
+
+/* =========================
+   EXCLUIR INDIVIDUAL
+========================= */
+
+function excluirHistorico(index) {
+
+    const historico =
+        carregarHistorico();
+
+
+    if (
+        index < 0 ||
+        index >= historico.length
+    ) {
+
+        return;
+
+    }
+
+
+    historico.splice(
+        index,
+        1
+    );
+
+
+    localStorage.setItem(
+
+        CHAVE_HISTORICO,
+
+        JSON.stringify(historico)
+
+    );
+
+
+    /*
+        Atualiza o modal
+        imediatamente.
+    */
+
+    mostrarHistorico();
+
+}
+
+
+/* =========================
+   LIMPAR TODO HISTÓRICO
+========================= */
+
+function limparHistoricoCompleto() {
+
+    const historico =
+        carregarHistorico();
+
+
+    if (historico.length === 0) {
+
+        return;
+
+    }
+
+
+    const confirmar =
+        confirm(
+            "Deseja apagar todo o histórico de consultas?"
+        );
+
+
+    if (!confirmar) {
+
+        return;
+
+    }
+
+
+    localStorage.removeItem(
+        CHAVE_HISTORICO
+    );
+
+
+    /*
+        Atualiza contador/lista
+        sem fechar o modal.
+    */
+
+    mostrarHistorico();
+
+}
+
+
+/* =========================
+   FECHAR HISTÓRICO
+========================= */
+
+function fecharHistorico() {
+
+    document
+        .getElementById(
+            "historicoModal"
+        )
+        .style
+        .display =
+        "none";
+
+}
+
+
+/* =========================
+   LIMPAR EQUIPAMENTOS
+========================= */
+
+function limparTudo() {
+
+    document
+        .getElementById("eq1")
+        .value =
+        "";
+
+
+    document
+        .getElementById("eq2")
+        .value =
+        "";
+
+
+    document
+        .getElementById(
+            "tituloA"
+        )
+        .innerText =
+        "Equipamento A";
+
+
+    document
+        .getElementById(
+            "tituloB"
+        )
+        .innerText =
+        "Equipamento B";
+
+
+    document
+        .getElementById(
+            "frameA"
+        )
+        .src =
+        "";
+
+
+    document
+        .getElementById(
+            "frameB"
+        )
+        .src =
+        "";
+
+
+    document
+        .getElementById("eq1")
+        .focus();
+
+}
+
+
+/* =========================
+   ENTER NOS CAMPOS
+========================= */
+
+document
+    .getElementById("eq1")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                abrirAmbos();
+
+            }
+
+        }
+    );
+
+
+document
+    .getElementById("eq2")
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (event.key === "Enter") {
+
+                abrirAmbos();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   FECHAR CLICANDO FORA
+========================= */
+
+document
+    .getElementById(
+        "historicoModal"
+    )
+    .addEventListener(
+        "click",
+        function(event) {
+
+            if (
+                event.target ===
+                this
+            ) {
+
+                fecharHistorico();
+
+            }
+
+        }
+    );
+
+
+/* =========================
+   ESC FECHA HISTÓRICO
+========================= */
+
+document
+    .addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key ===
+                "Escape"
+            ) {
+
+                fecharHistorico();
+
+            }
+
+        }
+    );
+
+</script>
+
+</body>
+</html>
