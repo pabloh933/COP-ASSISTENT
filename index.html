@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+
+<link rel="shortcut icon" href="favicon.ico">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>COP Ferramentas</title>
+
+<style>
+
+body{
+margin:0;
+font-family:system-ui;
+background:#0f1115;
+color:white;
+display:flex;
+height:100vh;
+}
+
+.sidebar{
+width:220px;
+background:#171923;
+border-right:1px solid #2a2f3a;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.sidebar h2{
+margin-top:0;
+font-size:18px;
+}
+
+.sidebar button{
+background:#e41d2d;
+border:none;
+color:white;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
+
+.sidebar button:hover{
+background:#c41624;
+}
+
+.main{
+flex:1;
+}
+
+iframe{
+width:100%;
+height:100%;
+border:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="sidebar">
+
+<h2>Ferramentas COP</h2>
+
+<button onclick="abrir('tools/mascara.html')">
+Máscara COP
+</button>
+
+<button onclick="abrir('tools/nodeb2.0.html')">
+Pesquisa NodeB
+</button>
+
+<button onclick="abrir('tools/Portal-Novato.html')">
+Portal do Novato
+</button>
+
+<button onclick="abrir('tools/guia-medicao.html')">
+Guia Medição
+</button>
+
+<button onclick="abrir('tools/CLS2.0 final.html')">
+CLS 2.0
+</button>
+</div>
+
+<div class="main">
+
+<iframe id="frame" src="tools/mascara.html"></iframe>
+
+</div>
+
+<script>
+
+function abrir(pagina){
+document.getElementById("frame").src = pagina;
+}
+
+</script>
+
+</body>
+</html>
