@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Máscara Rápida — COP REDE</title>
+
+<style>
+
+
+:root{
+--bg:#0f1115;
+--card:#171923;
+--muted:#a7b0c0;
+--text:#e8ecf1;
+--accent:#e41d2d;
+--outline:#2a2f3a;
+}
+
+body{
+margin:0;
+padding:24px;
+background:var(--bg);
+color:var(--text);
+font:500 16px system-ui;
+}
+
+.wrap{
+max-width:900px;
+margin:auto;
+display:grid;
+gap:20px;
+}
+
+.card{
+background:var(--card);
+border:1px solid var(--outline);
+border-radius:16px;
+padding:20px;
+position:relative;
+}
+
+
+.maskbox{
+display:flex;
+gap:12px;
+flex-wrap:wrap;
+align-items:center;
+padding:14px;
+background:#12141b;
+border-radius:12px;
+}
+
+.mask{
+font:600 18px monospace;
+padding:9px 12px;
+background:#0b0d12;
+border-radius:8px;
+border-left:0px solid var(--accent);
+}
+
+select,input,button,textarea{
+background:#0b0d12;
+color:var(--text);
+border:1px solid #273043;
+border-radius:10px;
+padding:10px;
+}
+
+textarea{
+width:97%;
+min-height:15px;
+max-height:120px;
+resize:vertical;
+font-weight:700;
+text-transform:uppercase;
+}
+
+.copy{
+background:var(--accent);
+cursor:pointer;
+}
+
+.clear{
+background:#374151;
+cursor:pointer;
+}
+
+.history{
+margin-top:10px;
+font-size:13px;
+color:var(--muted);
+}
+
+.itemHist{
+cursor:pointer;
+margin-bottom:5px;
+}
+
+
+.small{
+font-size:13px;
+color:var(--muted);
+}
+
+.itemHist{
+cursor:pointer;
+margin-bottom:1px;
+padding:3px;
+border-radius:6px;
+transition:0.1s;
+}
+
+.itemHist:hover{
+background:#1f2530;
+color:#fff;
+}
+</style>
+</head>
+
+<body>
+
+<div class="wrap">
+
+<div class="card">
+
+<h2>Máscara automática</h2>
+
+<input id="nomeInput" placeholder="Digite o nome">
+
+<div class="maskbox">
+
+<div id="mask" class="mask">
+@@ 00/00 00:00 NOME:
+</div>
+
+<button id="copyBtn" class="copy">Copiar</button>
+<button id="copyAllBtn" class="copy">Copiar Tudo</button>
+<button id="clearBtn" class="clear">Limpar</button>
+
+</div>
+
+<select id="updateSelect"></select>
+
+<h3>Texto personalizado</h3>
+
+<textarea id="customText" placeholder="Digite aqui..."></textarea>
+
+<span id="copied" class="small"></span>
+
+<div class="history" id="historyBox"></div>
+
+</div>
+
+
+<h3>Scripts rápidos</h3>
+
+
+<div class="card">
+
+<h2>Cabeçários rápidos</h2>
+
+<div class="maskbox">
+
+<select id="cabecarioSelect" style="min-width:320px"></select>
+
+<button id="copyCabecario" class="copy">Copiar</button>
+
+  <button class="copy ped" onclick="copiarScriptPED()">
+    PED
+  </button>
+
+  <button class="copy tec" onclick="copiarScriptTEC()">
+    TEC
+  </button>
+</div>
+
+</div>
+
+<span id="copiedCab" class="small"></span>
+
+</div>
+
+</div>
+
+
+<script>
+
+/* ===== CONFIG ===== */
+
+const defaultMsgs=[
+"EQUIPE DE FIBRA ACIONADA, EM DESLOCAMENTO PARA ATIVIDADE.",
+"PENDENTE DISPONIBILIDADE TECNICA, AGUARDANDO PROXIMA ATUALIZAÇÃO.",
+"FUSÕES EM ANDAMENTO.",
+"EVENTO FINALIZADO."
+];
+
+const defaultCab=[
+"#TEC: NOME #",
+"#TEC: VIDE #",
+"#PED: ACESSO AO CLIENTE#",
+"#VAL: EM PROCESSO DE VALIDAÇÃO# ",
+"#PED: AGUARDANDO RETORNO DO SIT#",
+"#PED: AREA DE RISCO#",
+"#PED: INDISPONIBILIDADE TECNICA#",
+"#NORMALIZADO SEM INTERVENÇÃO#"
+
+];
+
+/* ===== STORAGE ===== */
+
+const nomeInput=document.getElementById("nomeInput");
+const customText=document.getElementById("customText");
+
+nomeInput.value=localStorage.getItem("nomeCOP")||"";
+customText.value=localStorage.getItem("textoCOP")||"";
+
+nomeInput.oninput=()=>localStorage.setItem("nomeCOP",nomeInput.value);
+customText.oninput=()=>localStorage.setItem("textoCOP",customText.value);
+
+/* ===== LOAD SELECTS ===== */
+
+const updateSelect=document.getElementById("updateSelect");
+const cabSel=document.getElementById("cabecarioSelect");
+
+updateSelect.innerHTML="<option>— selecione —</option>";
+defaultMsgs.forEach(m=>{
+let o=new Option(m,m);
+updateSelect.add(o);
+});
+
+cabSel.innerHTML="<option>— selecione —</option>";
+defaultCab.forEach(c=>{
+let o=new Option(c,c);
+cabSel.add(o);
+});
+
+/* ===== MASK ===== */
+
+const mask=document.getElementById("mask");
+
+function renderMask(){
+
+let d=new Date();
+
+let dia=String(d.getDate()).padStart(2,"0");
+let mes=String(d.getMonth()+1).padStart(2,"0");
+
+let hora=String(d.getHours()).padStart(2,"0");
+let min=String(d.getMinutes()).padStart(2,"0");
+
+let nome=(nomeInput.value||"NOME").toUpperCase();
+
+mask.textContent=`@@ ${dia}/${mes} ${hora}:${min} ${nome}:`;
+
+}
+
+setInterval(renderMask,1000);
+renderMask();
+
+/* ===== COPY ===== */
+
+document.getElementById("copyBtn").onclick=copiar;
+
+function copiar(){
+
+let base=mask.textContent;
+
+let upd=updateSelect.selectedIndex>0?" "+updateSelect.value:"";
+
+let extra=customText.value;
+
+let final=(base+upd+" "+extra).toUpperCase();
+
+navigator.clipboard.writeText(final);
+
+const c=document.getElementById("copied");
+c.textContent="Copiado!";
+c.style.color="#22c55e";
+
+setTimeout(()=>{
+c.textContent="";
+c.style.color="";
+},1500);
+
+salvarHistorico(final);
+
+setTimeout(()=>copied.textContent="",1500);
+
+}
+
+/* ===== ENTER COPIA ===== */
+
+document.addEventListener("keydown",(e)=>{
+if(e.key==="Enter" && document.activeElement.tagName!=="TEXTAREA"){
+copiar();
+}
+});
+
+/* =====  COPIA ALTOMATICA DE CABECARIO===== */
+
+cabSel.addEventListener("change", ()=>{
+
+if(cabSel.selectedIndex===0) return;
+
+navigator.clipboard.writeText(cabSel.value);
+
+document.getElementById("copiedCab").textContent="Copiado";
+
+setTimeout(()=>copiedCab.textContent="",1500);
+
+});
+
+/* ===== LIMPAR ===== */
+
+document.getElementById("clearBtn").onclick=()=>{
+
+nomeInput.value="";
+customText.value="";
+updateSelect.selectedIndex=0;
+
+localStorage.removeItem("nomeCOP");
+localStorage.removeItem("textoCOP");
+
+};
+
+/* ===== HISTÓRICO ===== */
+
+function salvarHistorico(txt){
+
+let hist=JSON.parse(localStorage.getItem("histCOP")||"[]");
+
+let agora=new Date();
+let hora=agora.toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+
+hist.unshift({texto:txt,hora:hora});
+
+hist=hist.slice(0,5);
+
+localStorage.setItem("histCOP",JSON.stringify(hist));
+
+renderHist();
+
+}
+
+function renderHist(){
+
+let box=document.getElementById("historyBox");
+
+let hist=JSON.parse(localStorage.getItem("histCOP")||"[]");
+
+box.innerHTML="<b>Últimos:</b><br>";
+
+hist.forEach(h=>{
+box.innerHTML+=`
+<div class="itemHist" onclick="copiarHist('${h.texto}')">
+[${h.hora}] ${h.texto}
+</div>`;
+});
+
+}
+
+function copiarHist(t){
+navigator.clipboard.writeText(t);
+document.getElementById("copied").textContent="Copiado do histórico!";
+setTimeout(()=>copied.textContent="",1500);
+}
+
+renderHist();
+
+/* ===== CABEÇÁRIO ===== */
+
+document.getElementById("copyCabecario").onclick=()=>{
+
+if(cabSel.selectedIndex===0) return alert("Selecione");
+
+navigator.clipboard.writeText(cabSel.value);
+
+document.getElementById("copiedCab").textContent="Copiado";
+
+setTimeout(()=>copiedCab.textContent="",1500);
+
+};
+
+document.getElementById("copyAllBtn").onclick = copiarTudo;
+
+function copiarTudo(){
+
+let nome=(nomeInput.value||"NOME").toUpperCase();
+
+let cab=cabSel.selectedIndex>0 ? cabSel.value.replace("NOME",nome) : "";
+
+let base=mask.textContent;
+
+let upd=updateSelect.selectedIndex>0 ? " "+updateSelect.value : "";
+
+let extra=customText.value;
+
+let final="";
+
+if(cab){
+final+=cab+"\n\n";
+}
+
+final+=(base+upd+" "+extra).toUpperCase();
+
+navigator.clipboard.writeText(final);
+
+document.getElementById("copied").textContent="Copiado tudo!";
+
+salvarHistorico(final);
+
+setTimeout(()=>copied.textContent="",1500);
+
+}
+function getDataHora() {
+  const d = new Date();
+  const dia = String(d.getDate()).padStart(2, "0");
+  const mes = String(d.getMonth() + 1).padStart(2, "0");
+  const hora = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+  return `${dia}/${mes} ${hora}:${min}`;
+}
+
+function copiarScriptPED() {
+  const nome = (nomeInput.value || "NOME").toUpperCase();
+  const dataHora = getDataHora();
+
+  const texto = `
+#PED: INDISPONIBILIDADE TECNICA#
+
+### --- ###
+
+@@ ${dataHora} ${nome}: PENDENTE DISPONIBILIDADE TÉCNICA, AGUARDANDO PRÓXIMA ATUALIZAÇÃO.
+`.trim().toUpperCase();
+
+  navigator.clipboard.writeText(texto);
+  document.getElementById("copied").textContent = "Script PED copiado!";
+  setTimeout(() => copied.textContent = "", 1500);
+
+  salvarHistorico(texto);
+}
+
+function copiarScriptTEC() {
+  const nome = (nomeInput.value || "NOME").toUpperCase();
+  const dataHora = getDataHora();
+
+  const texto = `
+#TEC: nome#
+
+### --- ###
+
+@@ ${dataHora} ${nome}: EQUIPE DE FIBRA ACIONADA, EM DESLOCAMENTO PARA ATIVIDADE.
+
+
+`.trim().toUpperCase();
+
+  navigator.clipboard.writeText(texto);
+  document.getElementById("copied").textContent = "Script TEC copiado!";
+  setTimeout(() => copied.textContent = "", 1500);
+
+  salvarHistorico(texto);
+}
+</script>
+
+</body>
+</html>
