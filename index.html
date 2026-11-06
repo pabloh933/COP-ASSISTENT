@@ -1,590 +1,107 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CSL 2.0 - Cadastro de Localização</title>
+
+<link rel="shortcut icon" href="favicon.ico">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+
+<title>COP Ferramentas</title>
+
 <style>
-:root{
-  --primary:#0A2545; --primary2:#0d3163; --accent:#F97326; --accent-d:#ea580c;
-  --bg:#f8fafc; --card:#fff; --line:#e2e8f0; --txt:#334155; --ink:#0f172a; --mut:#94a3b8; --mut2:#64748b;
-  --ok:#15803d; --warn:#b45309;
+
+body{
+margin:0;
+font-family:system-ui;
+background:#0f1115;
+color:white;
+display:flex;
+height:100vh;
 }
-*{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased;
-  font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.5}
-a{color:inherit;text-decoration:none}
-button{font-family:inherit;cursor:pointer;border:0;color:inherit}
-button:focus-visible,input:focus-visible,.drop:focus-visible{outline:3px solid rgba(249,115,38,.55);outline-offset:2px}
-.wrap{max-width:1200px;margin:0 auto;padding:0 24px}
 
-/* ---------- Header ---------- */
-header{position:sticky;top:0;z-index:40;background:rgba(10,37,69,.95);backdrop-filter:blur(8px);color:#fff;border-bottom:1px solid rgba(255,255,255,.1)}
-header .wrap{display:flex;justify-content:space-between;align-items:center;padding-top:14px;padding-bottom:14px}
-.brand{display:flex;align-items:center;gap:10px;font-size:20px;font-weight:800;letter-spacing:-.01em}
-.brand i{font-style:normal;width:36px;height:36px;border-radius:10px;background:var(--accent);display:grid;place-items:center;font-size:18px;
-  box-shadow:0 8px 18px -6px rgba(249,115,38,.6)}
-.brand b{color:var(--accent)}
-nav{display:flex;align-items:center;gap:30px;font-size:14px;font-weight:500}
-nav a{color:rgba(255,255,255,.8);transition:color .2s}
-nav a:hover{color:var(--accent)}
-.pill-st{font-size:12px;color:rgba(255,255,255,.75);background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);padding:5px 12px;border-radius:999px;white-space:nowrap}
-@media(max-width:820px){nav a{display:none}}
-@media(max-width:560px){.pill-st{display:none}}
+.sidebar{
+width:220px;
+background:#171923;
+border-right:1px solid #2a2f3a;
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
 
-/* ---------- Hero ---------- */
-.hero{position:relative;color:#fff;text-align:center;
-  background:
-    radial-gradient(900px 400px at 85% -10%,rgba(249,115,38,.28),transparent 60%),
-    radial-gradient(700px 400px at 0% 100%,rgba(56,120,220,.25),transparent 60%),
-    linear-gradient(160deg,var(--primary) 0%,var(--primary2) 100%)}
-.hero:before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px}
-.hero .wrap{position:relative;padding-top:72px;padding-bottom:88px}
-.badge{display:inline-block;margin-bottom:20px;padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
-  font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#fed7aa}
-h1{margin:0 0 22px;font-size:clamp(34px,6vw,60px);font-weight:800;line-height:1.1;letter-spacing:-.02em}
-h1 span{color:var(--accent)}
-.lead{margin:0 auto 38px;max-width:680px;font-size:18px;color:#e2e8f0}
-.lead strong{color:#fff}
+.sidebar h2{
+margin-top:0;
+font-size:18px;
+}
 
-.search{position:relative;max-width:700px;margin:0 auto}
-.sbox{display:flex;gap:12px;padding:8px;border-radius:18px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);
-  backdrop-filter:blur(8px);box-shadow:0 25px 50px -12px rgba(0,0,0,.45)}
-.field{position:relative;flex:1}
-.field>span{position:absolute;left:16px;top:50%;transform:translateY(-50%);color:var(--mut);pointer-events:none}
-input[type=search]{width:100%;padding:14px 44px 14px 46px;border:0;border-radius:12px;font:inherit;font-size:16px;color:var(--ink);background:#fff;outline:none;-webkit-appearance:none;appearance:none}
-input[type=search]::placeholder{color:var(--mut)}
-input[type=search]::-webkit-search-cancel-button{display:none}
-input[type=search]:focus{box-shadow:0 0 0 4px rgba(249,115,38,.4)}
-input[type=search]:disabled{background:#e2e8f0;cursor:progress}
-.x{position:absolute;right:10px;top:50%;transform:translateY(-50%);display:none;width:28px;height:28px;border-radius:50%;background:#e2e8f0;color:#475569;font-size:13px;padding:0}
-.go{padding:0 32px;border-radius:12px;background:var(--accent);color:#fff;font-weight:700;font-size:16px;box-shadow:0 10px 22px -8px rgba(249,115,38,.7);transition:background .2s,transform .1s}
-.go:hover{background:var(--accent-d)} .go:active{transform:scale(.95)} .go:disabled{opacity:.6;cursor:progress}
+.sidebar button{
+background:#e41d2d;
+border:none;
+color:white;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+}
 
-.tabs{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px}
-.tab{padding:6px 16px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.18);color:#e2e8f0;font-size:13.5px;font-weight:500;transition:.2s}
-.tab small{opacity:.65;margin-left:4px;font-size:11.5px}
-.tab:hover{background:rgba(255,255,255,.16)}
-.tab[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:700}
-.hint{margin-top:12px;font-size:13px;color:rgba(226,232,240,.7)}
-.hint code{background:rgba(255,255,255,.12);padding:1px 7px;border-radius:6px;color:#fff}
+.sidebar button:hover{
+background:#c41624;
+}
 
-.sug{display:none;position:absolute;left:8px;right:8px;top:100%;margin-top:8px;z-index:30;text-align:left;background:#fff;color:var(--ink);border-radius:14px;
-  border:1px solid var(--line);overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}
-.row{display:flex;align-items:center;gap:10px;padding:11px 16px;border-bottom:1px solid #f1f5f9;cursor:pointer}
-.row:last-of-type{border:0}
-.row:hover,.row.on{background:#fff4ec}
-.row .id{font-weight:800;min-width:86px;color:var(--primary);font-variant-numeric:tabular-nums}
-.row .m{flex:1;min-width:0;font-size:14px;color:var(--mut2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.row .m b{color:var(--ink);font-weight:600}
-mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
-.tag{font-size:10.5px;font-weight:800;letter-spacing:.06em;padding:3px 8px;border-radius:7px;white-space:nowrap}
-.tag.csl{background:#ffedd5;color:#c2410c}
-.tag.nodeb{background:#dbeafe;color:#1d4ed8}
-.tag.uf{background:#f1f5f9;color:var(--mut2)}
-.sfoot{padding:9px 16px;font-size:12.5px;color:var(--mut2);background:#f8fafc;border-top:1px solid #f1f5f9}
-.none{padding:18px;text-align:center;color:var(--mut2)}
+.main{
+flex:1;
+}
 
-.estado{margin:18px auto 0;max-width:700px}
-.loading{display:inline-flex;align-items:center;gap:12px;padding:10px 20px;border-radius:999px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);font-size:14px;color:#e2e8f0}
-.spin{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:var(--accent);animation:sp .8s linear infinite}
-@keyframes sp{to{transform:rotate(360deg)}}
+iframe{
+width:100%;
+height:100%;
+border:none;
+}
 
-/* ---------- Resultados ---------- */
-#resultado{max-width:760px;margin:40px auto 0;text-align:left;display:grid;gap:16px}
-.anim{animation:in .45s cubic-bezier(.2,.8,.2,1) both}
-@keyframes in{from{opacity:0;transform:translateY(14px) scale(.98)}to{opacity:1;transform:none}}
-.card{background:var(--card);color:var(--ink);border-radius:18px;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,.45)}
-.card .bar{height:6px;background:linear-gradient(90deg,var(--accent),#fdba74)}
-.cbody{padding:26px 28px}
-.idrow{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:18px}
-.idrow h2{margin:0;font-size:22px;font-weight:800;color:var(--primary);letter-spacing:.02em}
-.three{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;text-align:center;padding-bottom:20px;border-bottom:1px solid #f1f5f9}
-.lbl{margin:0 0 4px;font-size:11.5px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
-.big{margin:0;font-size:30px;font-weight:800;line-height:1.15}
-.loc{margin:0;font-size:20px;font-weight:800;line-height:1.2}
-.cfb{display:inline-block;font-size:30px;font-weight:800;color:var(--primary);background:#ffedd5;border-radius:10px;padding:0 14px;letter-spacing:.03em}
-.cfb.nd{background:#fef3c7;color:var(--warn);font-size:22px;padding:5px 12px}
-.cfn{margin:5px 0 0;font-size:12.5px;color:var(--mut2)}
-.fields{display:grid;grid-template-columns:1fr 1fr;gap:16px 24px;margin-top:20px}
-.fields .f{grid-column:1/-1}
-.val{margin:0;font-size:16px;font-weight:600;color:var(--ink);word-break:break-word}
-.val.s{font-weight:400;color:var(--mut2)}
-.note{margin:18px 0 0;padding:10px 14px;border-radius:12px;font-size:13.5px;background:#fffbeb;color:var(--warn);border:1px solid #fde68a}
-.note.info{background:#eff6ff;color:#1d4ed8;border-color:#bfdbfe}
-.acts{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;padding-top:24px}
-.btn{padding:11px 20px;border-radius:10px;font-weight:600;font-size:15px;color:#fff;transition:background .2s,transform .1s}
-.btn:active{transform:scale(.96)}
-.btn.map{background:#2563eb}.btn.map:hover{background:#1d4ed8}
-.btn.copy{background:var(--accent)}.btn.copy:hover{background:var(--accent-d)}
-.btn.ghost{background:#f1f5f9;color:var(--ink)}.btn.ghost:hover{background:#e2e8f0}
-.cfcard{background:var(--card);color:var(--ink);border-radius:18px;padding:26px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,.45)}
-.cfcard .lbl{margin-bottom:2px}
-.cfcard .nm{font-size:18px;font-weight:700;color:var(--mut2)}
-.cfcard .cfb{margin-top:12px;font-size:44px;padding:4px 24px;border-radius:14px}
-.cfcard .rg{margin-top:8px;font-size:14px;color:var(--mut2)}
-.mais{justify-self:center;padding:11px 26px;border-radius:999px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#fff;font-weight:600}
-.mais:hover{background:rgba(255,255,255,.22)}
-.empty{background:var(--card);color:var(--ink);border-radius:18px;padding:34px;text-align:center;box-shadow:0 25px 50px -12px rgba(0,0,0,.45)}
-.empty .e{font-size:38px}.empty p{margin:6px 0 0;color:var(--mut2);font-size:14px}.empty .t{color:#dc2626;font-weight:700;font-size:16px}
-
-/* ---------- Painel de erro / carregar manual ---------- */
-.panel{display:none;background:var(--card);color:var(--ink);border-radius:18px;padding:28px;text-align:left;box-shadow:0 25px 50px -12px rgba(0,0,0,.45)}
-.panel h3{margin:0 0 6px;font-size:19px}
-.panel p{margin:6px 0;color:var(--mut2);font-size:14.5px}
-.panel ul{margin:10px 0;padding:0;list-style:none;font-size:13px;color:var(--mut2)}
-.panel li{padding:6px 10px;border-radius:8px;background:#f8fafc;margin-bottom:5px;word-break:break-all}
-.panel li b{color:var(--ink)}
-.drop{margin:14px 0 4px;padding:20px;border:2px dashed #cbd5e1;border-radius:12px;text-align:center;color:var(--mut2);cursor:pointer;transition:.2s}
-.drop:hover,.drop.over{border-color:var(--accent);background:#fff4ec;color:var(--accent-d)}
-.prow{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
-
-/* ---------- Benefícios / contato ---------- */
-section.sec{padding:96px 0 40px}
-.stitle{text-align:center;margin-bottom:56px}
-.stitle small{display:block;color:var(--accent);font-weight:700;font-size:13px;letter-spacing:.14em;text-transform:uppercase;margin-bottom:8px}
-.stitle h2{margin:0;font-size:clamp(28px,4vw,38px);font-weight:800;color:var(--primary)}
-.cards3{display:grid;grid-template-columns:repeat(3,1fr);gap:32px}
-@media(max-width:860px){.cards3{grid-template-columns:1fr}.three{grid-template-columns:1fr 1fr}.three>:last-child{grid-column:1/-1}.fields{grid-template-columns:1fr}.sbox{flex-direction:column}.go{padding:14px}.acts{justify-content:stretch}.acts .btn{flex:1}}
-.bcard{background:#fff;padding:32px;border-radius:18px;border:1px solid #f1f5f9;box-shadow:0 4px 14px -4px rgba(15,23,42,.1);transition:transform .25s,box-shadow .25s}
-.bcard:hover{transform:translateY(-6px);box-shadow:0 18px 40px -12px rgba(10,37,69,.25)}
-.ico{width:56px;height:56px;border-radius:14px;display:grid;place-items:center;font-size:28px;margin-bottom:20px}
-.bcard h3{margin:0 0 8px;font-size:20px;color:var(--primary)}
-.bcard p{margin:0;color:#475569}
-.contato{max-width:760px;margin:0 auto 90px;padding:44px;border-radius:18px;background:var(--primary);color:#fff;text-align:center;box-shadow:0 20px 40px -14px rgba(10,37,69,.5)}
-.contato h2{margin:0 0 8px;font-size:24px;font-weight:800}
-.contato p{margin:0;color:#cbd5e1}
-.contato strong{display:block;margin-top:16px;color:var(--accent);font-size:17px}
-footer{background:var(--primary);color:#cbd5e1;text-align:center;padding:24px;font-size:14px}
-footer small{display:block;margin-top:6px;font-size:12.5px;color:#94a3b8}
-footer a{color:#fdba74;cursor:pointer;text-decoration:underline;margin:0 4px}
-#toast{position:fixed;bottom:24px;left:50%;transform:translate(-50%,16px);opacity:0;pointer-events:none;z-index:60;background:#0f172a;color:#fff;
-  padding:12px 20px;border-radius:12px;font-size:14px;font-weight:500;box-shadow:0 20px 40px -10px rgba(0,0,0,.6);transition:opacity .3s,transform .3s}
-#toast.show{opacity:1;transform:translate(-50%,0)}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 </style>
+
 </head>
+
 <body>
 
-<header>
-  <div class="wrap">
-    <a href="#inicio" class="brand"><i>📍</i><span>CSL <b>2.0</b></span></a>
-    <nav>
-      <a href="#inicio">Início</a>
-      <a href="#beneficios">Benefícios</a>
-      <a href="#contato">Contato</a>
-      <span class="pill-st" id="stat">carregando base…</span>
-    </nav>
-  </div>
-</header>
+<div class="sidebar">
 
-<section id="inicio" class="hero">
-  <div class="wrap">
-    <span class="badge">Cadastro de Localização • CSL + NodeB</span>
-    <h1>Localização <span>inteligente</span><br> em segundos</h1>
-    <p class="lead">Localize qualquer ponto usando <strong>SIGLA + UF</strong>, o código do <strong>NodeB</strong>, cidade, bairro ou endereço — com dados organizados, padronizados e o <strong>CF</strong> já identificado.</p>
+<h2>Ferramentas COP</h2>
 
-    <div class="search">
-      <div class="sbox" role="search">
-        <div class="field">
-          <span>🔎</span>
-          <input id="q" type="search" autocomplete="off" spellcheck="false" disabled
-            placeholder="Carregando base de dados…" aria-label="Buscar localização"
-            role="combobox" aria-expanded="false" aria-controls="sug" aria-autocomplete="list">
-          <button class="x" id="x" type="button" aria-label="Limpar busca">✕</button>
-        </div>
-        <button class="go" id="go" type="button" disabled>Buscar</button>
-      </div>
-      <div class="sug" id="sug" role="listbox"></div>
-    </div>
+<button onclick="abrir('tools/mascara.html')">
+Máscara COP
+</button>
 
-    <div class="tabs" id="tabs">
-      <button class="tab" data-f="all" aria-pressed="true">Tudo<small id="n-all"></small></button>
-      <button class="tab" data-f="csl" aria-pressed="false">CSL<small id="n-csl"></small></button>
-      <button class="tab" data-f="nodeb" aria-pressed="false">NodeB<small id="n-nodeb"></small></button>
-    </div>
-    <p class="hint">Exemplos: <code>ACB NR</code> <code>EES0001</code> <code>Copacabana</code> &nbsp;•&nbsp; ↑ ↓ navegam, Enter abre, Esc fecha</p>
+<button onclick="abrir('tools/nodeb2.0.html')">
+Pesquisa NodeB
+</button>
 
-    <div class="estado" id="estado"></div>
+<button onclick="abrir('tools/Portal-Novato.html')">
+Portal do Novato
+</button>
 
-    <div class="panel" id="panel" style="max-width:700px;margin:18px auto 0">
-      <h3 id="p-tit">📂 Não foi possível carregar a base</h3>
-      <p id="p-txt"></p>
-      <ul id="p-lista"></ul>
-      <div class="drop" id="drop" tabindex="0">Arraste o <b>dados.json</b> aqui ou clique para selecionar o arquivo</div>
-      <input type="file" id="file" accept=".json,application/json" hidden>
-      <div class="prow"><button class="btn copy" id="retry" type="button">🔄 Tentar novamente</button></div>
-    </div>
+<button onclick="abrir('tools/guia-medicao.html')">
+Guia Medição
+</button>
 
-    <div id="resultado" aria-live="polite"></div>
-  </div>
-</section>
+<button onclick="abrir('tools/CLS2.0 final.html')">
+CLS 2.0
+</button>
+</div>
 
-<section id="beneficios" class="sec">
-  <div class="wrap">
-    <div class="stitle"><small>Vantagens</small><h2>Por que usar o CSL?</h2></div>
-    <div class="cards3">
-      <div class="bcard"><div class="ico" style="background:#ffedd5">📍</div><h3>Busca simplificada</h3><p>Localize pontos com poucos caracteres, sem navegar por listas — CSL e NodeB na mesma busca.</p></div>
-      <div class="bcard"><div class="ico" style="background:#dbeafe">📋</div><h3>Copiar endereço</h3><p>Estrutura pronta para copiar as informações de forma simplificada, com CF e razão social.</p></div>
-      <div class="bcard"><div class="ico" style="background:#d1fae5">🔄</div><h3>Sempre atualizado</h3><p>A base fica no GitHub: atualizou o <b>dados.json</b> no repositório, o site já puxa a versão nova.</p></div>
-    </div>
-  </div>
-</section>
+<div class="main">
 
-<section id="contato" class="sec" style="padding-top:60px;padding-bottom:0">
-  <div class="wrap">
-    <div class="contato">
-      <h2>Encontrou algo errado ou falta algum local?</h2>
-      <p>Fale com o responsável pelo CSL para atualizar a base de dados.</p>
-      <strong>Pablo H Alves</strong>
-    </div>
-  </div>
-</section>
+<iframe id="frame" src="tools/mascara.html"></iframe>
 
-<footer>
-  © 2026 CSL 2.0 • Cadastro de Localização — Pablo H Alves
-  <small><span id="meta"></span> <span id="acoes-base" hidden>• <a id="atualizar">atualizar base</a> • <a id="troca">carregar arquivo</a></span></small>
-</footer>
-
-<div id="toast" role="status"></div>
+</div>
 
 <script>
-/* =====================================================================
-   CONFIGURAÇÃO — preencha com os dados do SEU repositório no GitHub
-   (o repositório precisa ser PÚBLICO para o site conseguir ler o arquivo)
-   ===================================================================== */
-const CONFIG = {
-  usuario:     "SEU_USUARIO_GITHUB",
-  repositorio: "NOME_DO_REPOSITORIO",
-  branch:      "main",
-  arquivo:     "dados.json"      // caminho do arquivo dentro do repositório
-};
 
-/* ===== UTILITÁRIOS ===== */
-const $=id=>document.getElementById(id);
-const ASCII=/^[\x00-\x7f]*$/;
-const norm=t=>{t=String(t??"");
-  if(!ASCII.test(t)) t=t.normalize("NFD").replace(/[\u0300-\u036f]/g,"");
-  return t.toUpperCase().replace(/\s+/g," ").trim()};
-const esc=t=>String(t??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const CEP=/\b(\d{5})-?(\d{3})\b/;
-const fmt=n=>n.toLocaleString("pt-BR");
-
-let CF={},REG={},BASE=[],BAIRROS=[],META={},FONTE="";
-let filtro="all",atuais=[],ativo=-1,cards=[],mostrando=0,pronto=false,total=0,cfHtml="";
-
-/* ===== FONTES DA BASE: local (mesma pasta/Pages) → GitHub raw → jsDelivr ===== */
-function fontes(){
-  const l=[];
-  if(location.protocol.startsWith("http")) l.push({nome:"servidor local",url:CONFIG.arquivo});
-  if(CONFIG.usuario && !/^SEU_/.test(CONFIG.usuario)){
-    const {usuario:u,repositorio:r,branch:b,arquivo:a}=CONFIG;
-    l.push({nome:"GitHub",url:`https://raw.githubusercontent.com/${u}/${r}/${b}/${a}`});
-    l.push({nome:"jsDelivr (espelho do GitHub)",url:`https://cdn.jsdelivr.net/gh/${u}/${r}@${b}/${a}`});
-  }
-  return l;
+function abrir(pagina){
+document.getElementById("frame").src = pagina;
 }
 
-/* cache offline em IndexedDB */
-const idb=(modo,val)=>new Promise(res=>{
-  try{
-    const o=indexedDB.open("csl_nodeb",1);
-    o.onupgradeneeded=()=>o.result.createObjectStore("k");
-    o.onerror=()=>res(null);
-    o.onsuccess=()=>{const st=o.result.transaction("k",modo==="get"?"readonly":"readwrite").objectStore("k");
-      if(modo==="get"){const g=st.get("db");g.onsuccess=()=>res(g.result||null);g.onerror=()=>res(null)}
-      else{const p=st.put(val,"db");p.onsuccess=()=>res(true);p.onerror=()=>res(null)}};
-  }catch(_){res(null)}
-});
-
-function setEstado(txt){ $("estado").innerHTML=txt?`<div class="loading"><span class="spin"></span>${esc(txt)}</div>`:""; }
-
-async function baixar(url){
-  const ctl=new AbortController(), tm=setTimeout(()=>ctl.abort(),90000);
-  try{
-    const r=await fetch(url,{cache:"no-cache",signal:ctl.signal});
-    if(!r.ok) throw new Error("HTTP "+r.status);
-    if(!r.body||!r.body.getReader) return await r.json();
-    const rd=r.body.getReader(),partes=[]; let n=0;
-    for(;;){const {done,value}=await rd.read(); if(done)break; partes.push(value); n+=value.length;
-      setEstado(`Baixando base de dados… ${(n/1048576).toFixed(1)} MB`)}
-    const buf=new Uint8Array(n); let o=0; for(const p of partes){buf.set(p,o);o+=p.length}
-    setEstado("Processando registros…");
-    await new Promise(r=>setTimeout(r,20));
-    return JSON.parse(new TextDecoder().decode(buf));
-  }finally{clearTimeout(tm)}
-}
-
-async function carregar(){
-  $("panel").style.display="none";
-  setEstado("Carregando base de dados…");
-  const erros=[];
-  for(const f of fontes()){
-    try{
-      const d=await baixar(f.url);
-      iniciar(d,f.nome,true);
-      return;
-    }catch(e){ erros.push([f.nome,f.url,e.name==="AbortError"?"tempo esgotado":e.message]); }
-  }
-  const c=await idb("get");
-  if(c){ iniciar(c,"cópia salva neste navegador",false); toast("⚠️ Sem conexão com a base — usando a última cópia salva"); return; }
-  mostrarPainel(erros);
-}
-
-function mostrarPainel(erros){
-  setEstado("");
-  $("stat").textContent="base não carregada";
-  const p=$("panel"); p.style.display="block";
-  const semConfig=!CONFIG.usuario||/^SEU_/.test(CONFIG.usuario);
-  $("p-txt").innerHTML= semConfig
-    ? `O endereço do GitHub ainda não foi configurado. Abra o <b>index.html</b> e preencha o bloco <code>CONFIG</code> (usuário e repositório), ou selecione o <b>dados.json</b> manualmente abaixo.`
-    : `Tentei as fontes abaixo e nenhuma respondeu. Confira se o repositório é <b>público</b> e se o caminho do arquivo está correto — ou selecione o <b>dados.json</b> manualmente.`;
-  $("p-lista").innerHTML=erros.map(([n,u,m])=>`<li><b>${esc(n)}</b> — ${esc(m)}<br>${esc(u)}</li>`).join("");
-}
-
-function lerArquivo(f){
-  if(!f) return;
-  setEstado("Lendo arquivo…");
-  f.text().then(t=>{ iniciar(JSON.parse(t),"arquivo selecionado",true); $("panel").style.display="none"; })
-   .catch(()=>{setEstado("");toast("⚠️ Arquivo inválido")});
-}
-
-function iniciar(d,fonte,salvar){
-  if(!d||!d.nodeb||!d.nodeb.linhas||!d.csl||!d.csl.linhas||typeof d.cf!=="object") throw new Error("formato inesperado");
-  CF=d.cf; REG=d.regioes||{}; META=d.meta||{}; FONTE=fonte;
-  BAIRROS=Object.keys(CF).filter(k=>!k.includes("|")).sort((a,b)=>b.length-a.length)
-    .map(k=>[k,new RegExp("(?<![A-Z0-9])"+k.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"(?![A-Z0-9])","g")]);
-  const T=d.tabelas||{}, tab=n=>(T[n]||[]);
-  const P={mun:tab("municipios"),bai:tab("bairros"),pre:tab("predios"),gue:tab("nomes_guerra"),raz:tab("razoes_sociais"),cid:tab("cidades_nodeb")};
-  P.munN=P.mun.map(norm);P.baiN=P.bai.map(norm);P.preN=P.pre.map(norm);P.gueN=P.gue.map(norm);P.razN=P.raz.map(norm);P.cidN=P.cid.map(norm);
-  cfCache.clear();
-  const csl=new Array(d.csl.linhas.length), nb=new Array(d.nodeb.linhas.length);
-  d.csl.linhas.forEach((l,i)=>csl[i]=montarCSL(l,P));
-  d.nodeb.linhas.forEach((l,i)=>nb[i]=montarNodeB(l,P));
-  BASE=csl.concat(nb);
-  $("stat").textContent=`${fmt(BASE.length)} registros`;
-  $("n-all").textContent=fmt(BASE.length); $("n-csl").textContent=fmt(csl.length); $("n-nodeb").textContent=fmt(nb.length);
-  const dt=META.atualizado_em?" • atualizada em "+META.atualizado_em.split("-").reverse().join("/"):"";
-  $("meta").textContent=`Base v${META.versao||"?"}${dt} • fonte: ${fonte}`;
-  $("acoes-base").hidden=false;
-  setEstado(""); $("panel").style.display="none";
-  q.disabled=false; $("go").disabled=false; q.placeholder="Ex: ACB NR  •  EES0001  •  Copacabana"; pronto=true;
-  if(salvar) idb("put",d);
-  if(q.value) buscarAuto(); else q.focus({preventScroll:true});
-}
-
-/* ===== CF ===== */
-const mkCF=code=>code?{code,nome:REG[code]||"",ok:true}:{code:"—",nome:"NÃO DEFINIDO",ok:false};
-function cfPorNome(nome,uf){ const n=norm(nome); if(!n) return ""; return (uf&&CF[n+"|"+uf])||CF[n]||""; }
-function bairroNoTexto(txt){
-  const s=norm(txt); let best=null,fim=-1;
-  for(const [k,re] of BAIRROS){ re.lastIndex=0; let m;
-    while((m=re.exec(s))){const e=m.index+k.length; if(e>fim||(e===fim&&best&&k.length>best.length)){best=k;fim=e}}}
-  return best;
-}
-function inferirUF(cod,end){
-  const m=end.match(CEP);
-  if(m){const p=+m[1].slice(0,2); if(p===29)return"ES"; if(p>=20&&p<=28)return"RJ"}
-  if(/^(EES|ES)/.test(cod))return"ES"; if(/^(ERJ|RJ)/.test(cod))return"RJ"; return"";
-}
-
-/* ===== NORMALIZA REGISTROS ===== */
-const ix=(arr,i)=>i>=0?arr[i]:"";
-function montarNodeB(l,P){
-  const cod=String(l[0]).toUpperCase(), end=l[1]||"", cidade=ix(P.cid,l[2]), uf=inferirUF(cod,end);
-  const txt=end.replace(/^N\/A\s+/i,"").trim(), mc=txt.match(CEP);
-  const antes=(mc?txt.slice(0,mc.index):txt).trim();
-  let obs=mc?txt.slice(mc.index+mc[0].length).trim():""; if(/^(N\/A|\.)?$/i.test(obs)) obs="";
-  let rua=antes,numero="",bairro=""; const n=antes.match(/^(.*?)\s+n[ºo°]\s+(\S+)\s*(.*)$/i);
-  if(n){rua=n[1].replace(/[,\s]+$/,"");numero=n[2];bairro=n[3].trim()}
-  let code=cfPorNome(cidade,uf),origem=code?"cidade":"";
-  /* bairro só vale no RJ (no ES o CF é por município; "CENTRO" do Rio não se aplica) */
-  if(!code&&uf!=="ES"){ code=cfPorNome(bairro,uf); if(code)origem="bairro"; }
-  if(!code&&uf!=="ES"){ const b=bairroNoTexto(mc?end.slice(0,mc.index):end); if(b){code=CF[b];origem="bairro"} }
-  return {tipo:"nodeb",id:cod,uf,cidade,bairro,rua,numero,cep:mc?`${mc[1]}-${mc[2]}`:"",obs,
-    cf:mkCF(code),origem,razao:"",predio:"",guerra:"",siglas:"",
-    idx:norm(cod+" "+cidade+" "+end),exact:[norm(cod)],cid:ix(P.cidN,l[2])};
-}
-const cfCache=new Map();
-function montarCSL(l,P){
-  /* [uf, sigla_loc, sigla_est, predio, municipio, bairro, endereco, cep, nome_guerra, razao_social] */
-  const uf=(l[0]||"").toUpperCase(), cidade=ix(P.mun,l[4]), bairro=ix(P.bai,l[5]);
-  const k=uf+"|"+l[4]+"|"+l[5]; let c=cfCache.get(k);
-  if(!c){
-    let code=cfPorNome(cidade,uf),origem=code?"cidade":"";
-    if(!code&&uf!=="ES"){code=cfPorNome(bairro,uf);if(code)origem="bairro"}
-    c={cf:mkCF(code),origem}; cfCache.set(k,c);
-  }
-  const ids=[l[1],l[2]].filter(Boolean);
-  return {tipo:"csl",id:ids.join(" ")||"—",uf,cidade,bairro,rua:l[6]||"",numero:"",cep:l[7]||"",obs:"",
-    cf:c.cf,origem:c.origem,razao:ix(P.raz,l[9]),predio:ix(P.pre,l[3]),guerra:ix(P.gue,l[8]),
-    siglas:ids.join(" / "),
-    idx:[P.munN[l[4]],ix(P.baiN,l[5]),norm(l[6]),ix(P.razN,l[9]),ix(P.preN,l[3]),ix(P.gueN,l[8])].join(" "),
-    exact:[...ids.map(norm),norm(uf)],cid:P.munN[l[4]]};
-}
-
-/* ===== BUSCA ===== */
-function pesquisar(texto){
-  const termos=norm(texto).split(" ").filter(Boolean), qs=termos.join(" ");
-  if(!termos.length) return {termos,res:[]};
-  const res=[];
-  for(const r of BASE){
-    if(filtro!=="all"&&r.tipo!==filtro) continue;
-    let exatos=true, ok=true;
-    for(const t of termos){
-      if(r.exact.includes(t)) continue;
-      exatos=false;
-      if(r.tipo==="csl"?(t.length<3||!r.idx.includes(t)):!r.idx.includes(t)){ok=false;break}
-    }
-    if(!ok) continue;
-    let s=3;
-    if(exatos) s=0; else if(r.tipo==="nodeb"&&r.exact[0].startsWith(qs)) s=1; else if(r.cid===qs) s=2;
-    res.push([s,r]);
-  }
-  res.sort((a,b)=>a[0]-b[0]||(a[1].tipo===b[1].tipo?a[1].id.localeCompare(b[1].id):a[1].tipo==="csl"?-1:1));
-  return {termos,res:res.map(x=>x[1])};
-}
-function destaque(txt,termos){
-  const nt=norm(txt); if(nt.length!==String(txt).length) return esc(txt);
-  const m=[]; for(const t of termos){let i=nt.indexOf(t); while(i>-1){m.push([i,i+t.length]); i=nt.indexOf(t,i+t.length)}}
-  if(!m.length) return esc(txt);
-  m.sort((a,b)=>a[0]-b[0]); let o="",l=0;
-  for(const [a,b] of m){ if(a<l)continue; o+=esc(txt.slice(l,a))+"<mark>"+esc(txt.slice(a,b))+"</mark>"; l=b }
-  return o+esc(txt.slice(l));
-}
-
-const q=$("q"),sug=$("sug"),out=$("resultado"),xb=$("x");
-
-function cfCard(texto){
-  const n=norm(texto); if(!n) return "";
-  const a=[]; if(CF[n]) a.push([n,CF[n]]);
-  for(const uf of["ES","RJ"]) if(CF[n+"|"+uf]) a.push([`${n} (${uf})`,CF[n+"|"+uf]]);
-  return a.map(([k,c])=>`<div class="cfcard anim"><p class="lbl">CF encontrado para</p><p class="nm">${esc(k)}</p>
-    <p class="cfb">${esc(c)}</p><p class="rg">${esc(REG[c]||"")}</p></div>`).join("");
-}
-
-function buscarAuto(){
-  const v=q.value; xb.style.display=v?"block":"none";
-  if(!v.trim()){ fecharSug(); out.innerHTML=""; return; }
-  if(norm(v).length<2){ fecharSug(); return; }
-  const {termos,res}=pesquisar(v);
-  atuais=res.slice(0,10); ativo=-1;
-  sug.style.display="block"; q.setAttribute("aria-expanded","true");
-  if(!res.length){ sug.innerHTML=`<div class="none">Nenhum registro para <b>${esc(v)}</b></div>`; return; }
-  sug.innerHTML=atuais.map((r,i)=>`<div class="row" role="option" data-i="${i}">
-      <span class="id">${destaque(r.id,termos)}</span>
-      <span class="m"><b>${destaque(r.cidade,termos)}</b> — ${destaque(r.rua||"",termos)}</span>
-      <span class="tag ${r.tipo}">${r.tipo==="csl"?"CSL":"NODEB"}</span><span class="tag uf">${r.uf||"—"}</span></div>`).join("")+
-    (res.length>atuais.length?`<div class="sfoot">Mostrando ${atuais.length} de ${fmt(res.length)} — refine a busca ou pressione Enter para ver os primeiros.</div>`:"");
-}
-function fecharSug(){ sug.style.display="none"; sug.innerHTML=""; ativo=-1; q.setAttribute("aria-expanded","false"); }
-
-function buscar(){
-  if(!pronto) return;
-  const {termos,res}=pesquisar(q.value); if(!termos.length) return;
-  fecharSug();
-  cards=res.slice(0,60); mostrando=Math.min(5,cards.length); total=res.length;
-  render(cfCard(q.value));
-}
-function render(cfh){
-  if(cfh!==undefined) cfHtml=cfh;
-  if(!cards.length){
-    out.innerHTML=cfHtml||`<div class="empty anim"><div class="e">🔍</div><p class="t">Local ou CF não encontrado</p>
-      <p>Confira a sigla e a UF (ex.: <b>ACB NR</b>) ou tente o nome da cidade/bairro.</p></div>`;
-    return;
-  }
-  out.innerHTML=cfHtml+cards.slice(0,mostrando).map((r,i)=>cardHTML(r,i)).join("")+
-    (mostrando<cards.length?`<button class="mais" data-mais>Mostrar mais (${fmt(total-mostrando)} restantes${total>cards.length?", refine a busca para ver outros":""})</button>`:
-     (total>cards.length?`<p style="text-align:center;color:#cbd5e1;font-size:13px;margin:0">Exibindo os ${cards.length} primeiros de ${fmt(total)} — refine a busca.</p>`:""));
-}
-function abrir(r){ cards=[r]; mostrando=1; total=1; render(""); out.scrollIntoView({behavior:"smooth",block:"nearest"}); }
-
-/* ===== CARD ===== */
-const campo=(rot,val,cls="")=>val?`<div><p class="lbl">${rot}</p><p class="val ${cls}">${esc(val)}</p></div>`:"";
-function enderecoTxt(r){
-  const l1=[r.rua,r.numero&&"nº "+r.numero].filter(Boolean).join(", ");
-  return [l1,r.bairro,r.cidade+(r.uf?" - "+r.uf:""),r.cep&&"CEP "+r.cep].filter(Boolean).join(" • ");
-}
-const cfTxt=r=>r.cf.ok?`${r.cf.nome?r.cf.nome+" ":""}(${r.cf.code})`:"NÃO DEFINIDO";
-function cardHTML(r,i){
-  const nd=!r.cf.ok;
-  return `<article class="card anim" style="animation-delay:${i*70}ms"><div class="bar"></div><div class="cbody">
-    <div class="idrow"><h2>${esc(r.id)}</h2><span class="tag ${r.tipo}">${r.tipo==="csl"?"CSL":"NODEB"}</span></div>
-    <div class="three">
-      <div><p class="lbl">UF</p><p class="big">${esc(r.uf||"—")}</p></div>
-      <div><p class="lbl">CF</p><p class="cfb ${nd?"nd":""}">${esc(nd?"NÃO DEFINIDO":r.cf.code)}</p>${!nd&&r.cf.nome?`<p class="cfn">${esc(r.cf.nome)}</p>`:""}</div>
-      <div><p class="lbl">Localidade</p><p class="loc">${esc(r.cidade||"—")}</p></div>
-    </div>
-    ${nd?`<div class="note">⚠️ Esta localidade ainda não está no mapa de CF. Inclua em <b>dados.json → cf</b> para ela passar a ser identificada.</div>`:""}
-    ${r.origem==="bairro"&&r.tipo==="nodeb"?`<div class="note info">ℹ️ CF identificado pelo <b>bairro</b> do endereço (a cidade é grande demais para ter um único CF).</div>`:""}
-    <div class="fields">
-      ${campo("Sigla",r.siglas)}${campo("Prédio",r.predio)}
-      ${campo("Razão social",r.razao)}${campo("Nome de guerra",r.guerra)}
-      ${campo("Bairro",r.bairro)}${campo("CEP",r.cep)}
-      <div class="f">${campo("Endereço",[r.rua,r.numero&&"nº "+r.numero].filter(Boolean).join(", ")||"—")}</div>
-      ${r.obs?`<div class="f">${campo("Observação",r.obs,"s")}</div>`:""}
-    </div>
-    <div class="acts">
-      <button class="btn map" data-a="mapa" data-i="${i}">🗺️ Mostrar no mapa</button>
-      <button class="btn copy" data-a="copiar" data-i="${i}">📋 Copiar informações</button>
-    </div></div></article>`;
-}
-
-/* ===== AÇÕES ===== */
-async function copiar(t,msg){
-  try{await navigator.clipboard.writeText(t)}catch(_){
-    const a=document.createElement("textarea"); a.value=t; a.style.cssText="position:fixed;opacity:0";
-    document.body.appendChild(a); a.select(); try{document.execCommand("copy")}finally{a.remove()} }
-  toast(msg||"✅ Copiado!");
-}
-let tt; function toast(m){const t=$("toast");t.textContent=m;t.classList.add("show");clearTimeout(tt);tt=setTimeout(()=>t.classList.remove("show"),2200)}
-
-out.addEventListener("click",e=>{
-  if(e.target.closest("[data-mais]")){ mostrando=Math.min(mostrando+5,cards.length); render(); return; }
-  const b=e.target.closest("button[data-a]"); if(!b) return;
-  const r=cards[+b.dataset.i]; if(!r) return;
-  if(b.dataset.a==="mapa") window.open("https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(
-      [r.rua,r.numero,r.bairro,r.cidade,r.uf,"Brasil"].filter(Boolean).join(", ")),"_blank","noopener");
-  else copiar([`${r.tipo==="csl"?"CSL":"NodeB"}: ${r.id}`,`UF: ${r.uf||"—"}`,`CF: ${cfTxt(r)}`,`Localidade: ${r.cidade}`,
-      r.razao&&`Razão Social: ${r.razao}`,`Endereço: ${enderecoTxt(r)}`].filter(Boolean).join("\n"),"✅ Informações copiadas!");
-});
-
-/* ===== EVENTOS ===== */
-q.addEventListener("input",buscarAuto);
-q.addEventListener("focus",()=>{ if(pronto&&norm(q.value).length>=2&&!out.innerHTML) buscarAuto() });
-q.addEventListener("keydown",e=>{
-  const rows=[...sug.querySelectorAll(".row")];
-  if(e.key==="ArrowDown"||e.key==="ArrowUp"){
-    if(!rows.length) return; e.preventDefault();
-    rows.forEach(r=>r.classList.remove("on"));
-    ativo=(ativo+(e.key==="ArrowDown"?1:-1)+rows.length)%rows.length;
-    rows[ativo].classList.add("on"); rows[ativo].scrollIntoView({block:"nearest"});
-  }else if(e.key==="Enter"){ e.preventDefault(); if(ativo>-1&&atuais[ativo]){fecharSug();abrir(atuais[ativo])}else buscar() }
-  else if(e.key==="Escape") fecharSug();
-});
-sug.addEventListener("click",e=>{const r=e.target.closest(".row"); if(r){const x=atuais[+r.dataset.i]; fecharSug(); abrir(x)}});
-$("go").addEventListener("click",buscar);
-xb.addEventListener("click",()=>{q.value="";xb.style.display="none";fecharSug();out.innerHTML="";q.focus()});
-$("tabs").addEventListener("click",e=>{
-  const t=e.target.closest(".tab"); if(!t) return; filtro=t.dataset.f;
-  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-pressed",b===t));
-  if(q.value) {buscarAuto(); if(out.innerHTML) buscar();}
-});
-document.addEventListener("click",e=>{ if(!e.target.closest(".search")) fecharSug() });
-
-const drop=$("drop"),file=$("file");
-drop.addEventListener("click",()=>file.click());
-drop.addEventListener("keydown",e=>{if(e.key==="Enter"||e.key===" "){e.preventDefault();file.click()}});
-file.addEventListener("change",()=>lerArquivo(file.files[0]));
-["dragover","dragenter"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.add("over")}));
-["dragleave","drop"].forEach(ev=>drop.addEventListener(ev,e=>{e.preventDefault();drop.classList.remove("over")}));
-drop.addEventListener("drop",e=>lerArquivo(e.dataTransfer.files[0]));
-$("retry").addEventListener("click",carregar);
-$("atualizar").addEventListener("click",()=>{pronto=false;q.disabled=true;$("go").disabled=true;carregar()});
-$("troca").addEventListener("click",()=>{ $("p-txt").textContent="Selecione um arquivo dados.json no formato do banco unificado."; $("p-lista").innerHTML=""; $("panel").style.display="block"; $("inicio").scrollIntoView({behavior:"smooth"}) });
-
-carregar();
 </script>
+
 </body>
 </html>
