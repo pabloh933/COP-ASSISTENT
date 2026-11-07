@@ -25,7 +25,7 @@ header{flex:none;position:relative;color:#fff;padding:.85rem 1.2rem 1rem;border-
              linear-gradient(160deg,var(--primary) 0%,var(--primary2) 100%)}
 header::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px}
 header>*{position:relative}
-.hl{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem}
+.hl{ display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap;}
 .brand{display:flex;align-items:center;gap:.65rem;font-size:1.3rem;font-weight:800;letter-spacing:-.01em}
 .brand i{font-style:normal;width:2.3rem;height:2.3rem;border-radius:.6rem;background:var(--accent);display:grid;place-items:center;font-size:1.1rem;box-shadow:0 8px 18px -6px rgba(249,115,38,.7)}
 .brand b{color:var(--accent);font-weight:800}
@@ -33,9 +33,10 @@ header>*{position:relative}
 .base b{color:#fed7aa;font-weight:700}
 .base a{color:#fdba74;cursor:pointer;text-decoration:underline}
 .spin{display:inline-block;width:.85rem;height:.85rem;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:var(--accent);animation:gira .8s linear infinite;vertical-align:-2px;margin-right:.4rem}
+.base{ margin-left:auto;}
 @keyframes gira{to{transform:rotate(360deg)}}
 
-.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end;padding:.6rem;border-radius:1rem;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(8px)}
+.toolbar{ position:relative; z-index:1001; display:grid; gap:.6rem; grid-template-columns: minmax(250px,1fr) auto minmax(250px,1fr) auto auto auto auto; align-items:end; padding:.6rem; border-radius:1rem; background:var(--glass); border:1px solid var(--glass-line); backdrop-filter:blur(8px);}
 .campo{position:relative;flex:1;min-width:14rem}
 .campo label{display:block;font-size:.76rem;color:#cbd5e1;margin-bottom:.25rem;font-weight:500}
 input[type=text]{width:100%;height:2.6rem;padding:0 .9rem;border:0;border-radius:.75rem;background:#fff;color:var(--ink);font-size:.95rem;outline:none;text-transform:uppercase}
@@ -67,7 +68,7 @@ mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
 .mini{background:none;border:0;color:#fdba74;cursor:pointer;font-weight:600;font-size:.85rem;text-decoration:underline}
 
 /* ---------- Área dos painéis: sempre ESQUERDA e DIREITA ---------- */
-.stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column;}
+.stage{ flex:1; min-height:0; position:relative; z-index:1; display:flex; flex-direction:column;}
 .frames{flex:1;display:flex;min-height:0;overflow-x:auto}
 .painel{flex:1 1 50%;min-width:0;display:flex;flex-direction:column;border-right:2px solid var(--primary2)}
 .painel:last-child{border-right:0}
@@ -140,6 +141,8 @@ iframe{width:100%;height:100%;border:0;background:#fff}
   .lrow{grid-template-columns:1fr 1.6rem 1fr}.lrow .obs{grid-column:1/-1}
   .mf{flex-direction:column}.mf .btn{width:100%}
 }
+
+@media (max-width: 900px){ .toolbar{ grid-template-columns:1fr; } .campo{ width:100%; } .toolbar .btn{ width:100%; } .linkbar{ width:95%; margin:.5rem auto; }}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
@@ -304,6 +307,23 @@ const ligacoesEntre = (a, b) => (POR.get(a) || []).filter(l => l.peer === b);
 const eq1 = $("eq1"), eq2 = $("eq2");
 let estado = { a: "", b: "", diretos: [], sel: null, linkKey: "" };
 let aberto = { a: "", b: "", portaA: "", portaB: "", obs: "" };
+
+/* Limpa o lado oposto quando começar uma nova consulta */
+eq1.addEventListener("input", () => {
+  if (eq2.value) {
+    eq2.value = "";
+    estado.linkKey = "";
+    analisar();
+  }
+});
+
+eq2.addEventListener("input", () => {
+  if (eq1.value) {
+    eq1.value = "";
+    estado.linkKey = "";
+    analisar();
+  }
+});
 
 function analisar(op = {}) {
   const a = norm(eq1.value), b = norm(eq2.value);
