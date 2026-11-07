@@ -1,1195 +1,609 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
 <title>COP Smart Analyzer</title>
-
 <style>
-
-:root {
-    --bg: #dcdcdc;
-    --dark: #020817;
-    --panel: #334155;
-    --primary: #2563eb;
-    --danger: #dc2626;
-    --danger-hover: #b91c1c;
-    --border: #d1d5db;
+:root{
+  --primary:#0A2545; --primary2:#0d3163; --accent:#F97326; --accent-d:#ea580c; --accent-soft:#ffedd5;
+  --bg:#f1f5f9; --card:#fff; --line:#e2e8f0; --ink:#0f172a; --txt:#334155; --mut:#64748b; --mut2:#94a3b8;
+  --warn:#b45309; --danger:#dc2626; --danger-h:#b91c1c;
+  --glass:rgba(255,255,255,.1); --glass-line:rgba(255,255,255,.18);
 }
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  display:flex;flex-direction:column;height:100dvh;-webkit-font-smoothing:antialiased}
+:focus-visible{outline:3px solid rgba(249,115,38,.55);outline-offset:2px}
+button{font-family:inherit}
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
+/* ---------- Cabeçalho (mesmo clima do CSL: azul-marinho, pontos e brilho laranja) ---------- */
+header{flex:none;position:relative;color:#fff;padding:.85rem 1.2rem 1rem;border-bottom:3px solid var(--accent);
+  background:radial-gradient(900px 300px at 90% -40%,rgba(249,115,38,.30),transparent 60%),
+             radial-gradient(700px 300px at 0% 140%,rgba(56,120,220,.28),transparent 60%),
+             linear-gradient(160deg,var(--primary) 0%,var(--primary2) 100%)}
+header::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);background-size:22px 22px}
+header>*{position:relative}
+.hl{display:flex;align-items:center;justify-content:space-between;gap:1rem;flex-wrap:wrap;margin-bottom:.8rem}
+.brand{display:flex;align-items:center;gap:.65rem;font-size:1.3rem;font-weight:800;letter-spacing:-.01em}
+.brand i{font-style:normal;width:2.3rem;height:2.3rem;border-radius:.6rem;background:var(--accent);display:grid;place-items:center;font-size:1.1rem;box-shadow:0 8px 18px -6px rgba(249,115,38,.7)}
+.brand b{color:var(--accent);font-weight:800}
+.base{font-size:.8rem;color:rgba(255,255,255,.78);display:flex;gap:.7rem;align-items:center;flex-wrap:wrap;padding:.3rem .8rem;border-radius:999px;background:var(--glass);border:1px solid var(--glass-line)}
+.base b{color:#fed7aa;font-weight:700}
+.base a{color:#fdba74;cursor:pointer;text-decoration:underline}
+.spin{display:inline-block;width:.85rem;height:.85rem;border-radius:50%;border:2px solid rgba(255,255,255,.3);border-top-color:var(--accent);animation:gira .8s linear infinite;vertical-align:-2px;margin-right:.4rem}
+@keyframes gira{to{transform:rotate(360deg)}}
+
+.toolbar{display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end;padding:.6rem;border-radius:1rem;background:var(--glass);border:1px solid var(--glass-line);backdrop-filter:blur(8px)}
+.campo{position:relative;flex:1;min-width:14rem}
+.campo label{display:block;font-size:.76rem;color:#cbd5e1;margin-bottom:.25rem;font-weight:500}
+input[type=text]{width:100%;height:2.6rem;padding:0 .9rem;border:0;border-radius:.75rem;background:#fff;color:var(--ink);font-size:.95rem;outline:none;text-transform:uppercase}
+input[type=text]::placeholder{color:var(--mut2);text-transform:none}
+input[type=text]:focus{box-shadow:0 0 0 4px rgba(249,115,38,.4)}
+.btn{height:2.6rem;padding:0 1.05rem;border-radius:.75rem;border:1px solid var(--glass-line);background:var(--glass);color:#fff;font-weight:600;font-size:.9rem;cursor:pointer;white-space:nowrap;transition:background .2s,transform .1s}
+.btn:hover{background:rgba(255,255,255,.2)} .btn:active{transform:scale(.96)}
+.btn.pri{background:var(--accent);border-color:var(--accent);font-weight:700;box-shadow:0 10px 22px -8px rgba(249,115,38,.7)}
+.btn.pri:hover{background:var(--accent-d)}
+.btn.danger{background:var(--danger);border-color:var(--danger)} .btn.danger:hover{background:var(--danger-h)}
+.btn.icon{width:2.6rem;padding:0}
+
+.sug{display:none;position:absolute;left:0;right:0;top:100%;margin-top:.35rem;z-index:50;background:#fff;color:var(--ink);border-radius:.8rem;overflow:hidden;border:1px solid var(--line);box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}
+.sug div{display:flex;justify-content:space-between;gap:1rem;padding:.6rem .9rem;cursor:pointer;font-size:.9rem;border-bottom:1px solid #f1f5f9}
+.sug div:last-child{border:0}
+.sug div:hover,.sug div.on{background:#fff4ec}
+.sug small{color:var(--mut);white-space:nowrap}
+mark{background:#fde68a;color:inherit;border-radius:3px;padding:0 1px}
+
+/* ---------- Barra de conexão ---------- */
+.linkbar{margin-top:.7rem;font-size:.88rem;display:none;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.55rem .9rem;border-radius:.8rem;background:var(--glass);border:1px solid var(--glass-line)}
+.linkbar.ok{border-color:rgba(249,115,38,.7);background:rgba(249,115,38,.14)}
+.linkbar.warn{border-color:rgba(251,191,36,.6);background:rgba(251,191,36,.12)}
+.linkbar .p{font-weight:700;color:#fed7aa}
+.chip{padding:.22rem .7rem;border-radius:999px;border:1px solid var(--glass-line);background:var(--glass);color:#fff;font-size:.8rem;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);font-weight:700}
+.tag{display:inline-block;padding:.12rem .55rem;border-radius:.45rem;font-size:.74rem;font-weight:600;background:#f1f5f9;border:1px solid var(--line);color:var(--mut)}
+.tag.warn{background:#fef3c7;color:var(--warn);border-color:#fde68a}
+.tag.g{background:#dbeafe;color:#1d4ed8;border-color:#bfdbfe}
+.mini{background:none;border:0;color:#fdba74;cursor:pointer;font-weight:600;font-size:.85rem;text-decoration:underline}
+
+/* ---------- Área dos painéis: sempre ESQUERDA e DIREITA ---------- */
+.stage{flex:1;min-height:0;position:relative;display:flex;flex-direction:column}
+.frames{flex:1;display:flex;min-height:0;overflow-x:auto}
+.painel{flex:1 1 50%;min-width:0;display:flex;flex-direction:column;border-right:2px solid var(--primary2)}
+.painel:last-child{border-right:0}
+.titulo{flex:none;background:var(--primary);color:#fff;border-bottom:3px solid var(--accent);padding:.55rem .85rem;display:flex;align-items:center;gap:.6rem;flex-wrap:wrap;min-height:3.2rem}
+.titulo .lado{width:1.6rem;height:1.6rem;border-radius:.45rem;background:var(--accent);color:#fff;font-weight:800;font-size:.85rem;display:grid;place-items:center;flex:none}
+.titulo .nome{font-weight:800;font-size:1.05rem;word-break:break-all}
+.titulo .porta{font-size:.8rem;color:#fed7aa;background:rgba(249,115,38,.18);border:1px solid rgba(249,115,38,.55);padding:.1rem .55rem;border-radius:.45rem}
+.titulo .tag{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.2);color:#fed7aa}
+.titulo .tag.warn{background:rgba(251,191,36,.18);color:#fcd34d;border-color:rgba(251,191,36,.5)}
+.titulo .acoes{margin-left:auto;display:flex;gap:.3rem}
+.ia{background:var(--glass);border:1px solid var(--glass-line);color:#e2e8f0;border-radius:.45rem;height:1.85rem;padding:0 .6rem;font-size:.78rem;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;transition:background .2s}
+.ia:hover{background:var(--accent);border-color:var(--accent);color:#fff}
+.corpo{flex:1;position:relative;min-height:0;background:#fff}
+iframe{width:100%;height:100%;border:0;background:#fff}
+.ph,.ld{position:absolute;inset:0;display:grid;place-items:center;text-align:center;padding:1.5rem;background:var(--bg);color:var(--mut);font-size:.92rem}
+.ld{display:none;background:rgba(241,245,249,.9);color:var(--ink);z-index:2}
+.ld.on{display:grid}
+.ld .spin,.ph .spin{border-color:rgba(10,37,69,.2);border-top-color:var(--accent)}
+
+/* ---------- Conexões: folha sobre os painéis (não empurra o layout) ---------- */
+.dwrap{display:none;position:absolute;inset:0;z-index:30;background:rgba(2,8,23,.55);padding:.8rem;overflow:auto}
+.dwrap.open{display:block}
+.dsheet{max-width:60rem;margin:0 auto;background:#fff;color:var(--ink);border-radius:1rem;overflow:hidden;box-shadow:0 25px 50px -12px rgba(0,0,0,.5)}
+.dsheet::before{content:"";display:block;height:6px;background:linear-gradient(90deg,var(--accent),#fdba74)}
+.dh{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;padding:.8rem 1rem;border-bottom:1px solid var(--line)}
+.dh .chip{background:#f1f5f9;color:var(--ink);border-color:var(--line)}
+.dh .chip[aria-pressed=true]{background:var(--accent);border-color:var(--accent);color:#fff}
+.dh input{flex:1;min-width:12rem;height:2.2rem;text-transform:none;font-size:.85rem;border:1px solid var(--line);border-radius:.6rem}
+.dl{max-height:62vh;overflow:auto;padding:.4rem 1rem 1rem}
+.lrow{display:grid;grid-template-columns:minmax(8rem,1fr) 1.6rem minmax(10rem,1.3fr) minmax(8rem,1fr);gap:.5rem;align-items:center;width:100%;text-align:left;
+  padding:.6rem .75rem;margin-top:.35rem;border:1px solid var(--line);border-radius:.7rem;background:#fff;color:var(--ink);font-size:.85rem;cursor:pointer;transition:.2s}
+.lrow:hover{border-color:var(--accent);background:#fff4ec}
+.lrow .obs{display:flex;gap:.3rem;flex-wrap:wrap}
+.lrow small{color:var(--mut);display:block}
+.vazio{padding:1.2rem;text-align:center;color:var(--mut);font-size:.9rem}
+
+/* ---------- Modais (cartão branco com barra laranja, igual ao CSL) ---------- */
+.overlay{display:none;position:fixed;inset:0;background:rgba(2,8,23,.6);z-index:9999;padding:1rem}
+.modal{width:40rem;max-width:100%;max-height:88vh;overflow:auto;background:#fff;color:var(--ink);border-radius:1.1rem;margin:1rem auto;padding:1.3rem;box-shadow:0 25px 50px -12px rgba(0,0,0,.5);border-top:6px solid var(--accent)}
+.mh{display:flex;justify-content:space-between;align-items:center;margin-bottom:.3rem}
+.mh h2{font-size:1.2rem;font-weight:800;color:var(--primary)}
+.x{background:transparent;border:0;color:var(--mut);font-size:1.3rem;cursor:pointer;width:2.2rem;height:2.2rem;border-radius:.5rem}
+.x:hover{background:#f1f5f9}
+.dsheet .x{margin-left:auto}
+#cont{color:var(--mut);font-size:.82rem;margin-bottom:.8rem}
+.item{border:1px solid var(--line);border-radius:.7rem;padding:.75rem .9rem;margin-bottom:.5rem;cursor:pointer;background:#fff;display:flex;justify-content:space-between;align-items:center;gap:.8rem;transition:.2s}
+.item:hover{border-color:var(--accent);background:#fff4ec}
+.item .t{min-width:0;flex:1;font-size:.9rem;word-break:break-all}
+.item .t small{display:block;color:var(--mut);margin-top:.2rem}
+.item .t i{font-style:normal;color:var(--accent-d);font-size:.78rem}
+.mf{display:flex;justify-content:space-between;gap:.6rem;margin-top:1rem;padding-top:1rem;border-top:1px solid var(--line)}
+.modal .btn:not(.danger):not(.pri){background:#f1f5f9;border-color:var(--line);color:var(--ink)}
+.modal .btn:not(.danger):not(.pri):hover{background:#e2e8f0}
+.drop{margin:1rem 0;padding:1.6rem;border:2px dashed #cbd5e1;border-radius:.8rem;text-align:center;color:var(--mut);cursor:pointer;transition:.2s}
+.drop:hover,.drop.over{border-color:var(--accent);background:#fff4ec;color:var(--accent-d)}
+.erros{list-style:none;font-size:.78rem;color:var(--mut);margin:.5rem 0}
+.erros li{padding:.4rem .6rem;background:#f8fafc;border-radius:.5rem;margin-bottom:.3rem;word-break:break-all}
+
+#toast{position:fixed;bottom:1.4rem;left:50%;transform:translate(-50%,14px);opacity:0;pointer-events:none;z-index:10000;background:#0f172a;color:#fff;padding:.7rem 1.2rem;border-radius:.8rem;font-size:.88rem;font-weight:500;box-shadow:0 20px 40px -10px rgba(0,0,0,.6);transition:opacity .3s,transform .3s}
+#toast.show{opacity:1;transform:translate(-50%,0)}
+#toast.warn{border-left:4px solid var(--accent)}
+
+@media (max-width:700px){
+  .painel{flex:0 0 min(92vw,22rem)}            /* continua lado a lado; rola na horizontal */
+  .toolbar .btn:not(.icon){flex:1}
+  .lrow{grid-template-columns:1fr 1.6rem 1fr}.lrow .obs{grid-column:1/-1}
+  .mf{flex-direction:column}.mf .btn{width:100%}
 }
-
-body {
-    background: var(--bg);
-    font-family: Arial, Helvetica, sans-serif;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-}
-
-/* =========================
-   CABEÇALHO
-========================= */
-
-header {
-    background: var(--dark);
-    color: white;
-    padding: 15px;
-    border-bottom: 3px solid var(--primary);
-}
-
-header h1 {
-    margin-bottom: 12px;
-}
-
-.toolbar {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    align-items: center;
-}
-
-input {
-    height: 40px;
-    width: 280px;
-    padding: 0 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    outline: none;
-    font-size: 14px;
-}
-
-input:focus {
-    border-color: var(--primary);
-}
-
-button {
-    height: 40px;
-    padding: 0 15px;
-    background: var(--primary);
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-button:hover {
-    opacity: .9;
-}
-
-/* =========================
-   PAINÉIS
-========================= */
-
-.frames {
-    flex: 1;
-    display: flex;
-    min-height: 0;
-}
-
-.panel {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    border-right: 1px solid #999;
-}
-
-.panel:last-child {
-    border-right: none;
-}
-
-.titulo {
-    background: var(--panel);
-    color: white;
-    text-align: center;
-    padding: 10px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-iframe {
-    flex: 1;
-    width: 100%;
-    border: none;
-    background: white;
-}
-
-/* =========================
-   HISTÓRICO
-========================= */
-
-#historicoModal {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0, 0, 0, .55);
-    z-index: 9999;
-    padding: 20px;
-}
-
-.modal-content {
-    width: 620px;
-    max-width: 95%;
-    max-height: 85vh;
-    overflow: auto;
-    background: white;
-    margin: 20px auto;
-    border-radius: 8px;
-    padding: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, .3);
-}
-
-.modal-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 5px;
-}
-
-.modal-header h2 {
-    font-size: 22px;
-}
-
-.btnFecharX {
-    background: transparent;
-    color: #555;
-    font-size: 22px;
-    padding: 0;
-    width: 40px;
-}
-
-.btnFecharX:hover {
-    background: #eee;
-}
-
-#contadorHistorico {
-    color: #64748b;
-    font-size: 13px;
-    margin-bottom: 15px;
-}
-
-#listaHistorico {
-    margin-bottom: 5px;
-}
-
-.itemHistorico {
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 12px;
-    margin-bottom: 8px;
-    cursor: pointer;
-    transition: .2s;
-    background: white;
-}
-
-.itemHistorico:hover {
-    background: #f8fafc;
-    border-color: var(--primary);
-}
-
-.itemHistoricoConteudo {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 15px;
-}
-
-.equipamentosHistorico {
-    flex: 1;
-    min-width: 0;
-}
-
-.equipamentosHistorico strong {
-    color: #0f172a;
-}
-
-.dataHistorico {
-    color: #64748b;
-    font-size: 12px;
-    display: inline-block;
-    margin-top: 5px;
-}
-
-.btnExcluir {
-    background: var(--danger);
-    width: 40px;
-    min-width: 40px;
-    padding: 0;
-    font-size: 17px;
-}
-
-.btnExcluir:hover {
-    background: var(--danger-hover);
-    opacity: 1;
-}
-
-.historicoVazio {
-    text-align: center;
-    padding: 30px 10px;
-    color: #64748b;
-}
-
-.footerModal {
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    margin-top: 15px;
-    padding-top: 15px;
-    border-top: 1px solid #e5e7eb;
-}
-
-.btnDanger {
-    background: var(--danger);
-}
-
-.btnDanger:hover {
-    background: var(--danger-hover);
-    opacity: 1;
-}
-
-/* =========================
-   RESPONSIVIDADE
-========================= */
-
-@media (max-width: 1200px) {
-
-    .frames {
-        flex-direction: column;
-    }
-
-    .panel {
-        width: 100%;
-        height: 50%;
-        border-right: none;
-        border-bottom: 1px solid #999;
-    }
-
-    .panel:last-child {
-        border-bottom: none;
-    }
-
-}
-
-@media (max-width: 650px) {
-
-    input {
-        width: 100%;
-    }
-
-    .toolbar {
-        align-items: stretch;
-    }
-
-    .toolbar button {
-        flex: 1;
-    }
-
-    .modal-content {
-        padding: 15px;
-    }
-
-    .footerModal {
-        flex-direction: column;
-    }
-
-    .footerModal button {
-        width: 100%;
-    }
-
-}
-
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
-
 <body>
-
-<!-- =========================
-     CABEÇALHO
-========================= -->
-
 <header>
+  <div class="hl">
+    <div class="brand"><i>🚀</i><span>COP <b>Smart Analyzer</b></span></div>
+    <div class="base" id="base"><span><span class="spin"></span>carregando base de conexões…</span></div>
+  </div>
 
-    <h1>🚀 COP Smart Analyzer</h1>
-
-    <div class="toolbar">
-
-        <input
-            type="text"
-            id="eq1"
-            placeholder="Equipamento A"
-            autocomplete="off">
-
-        <input
-            type="text"
-            id="eq2"
-            placeholder="Equipamento B"
-            autocomplete="off">
-
-        <button onclick="abrirAmbos()">
-            Abrir Ambos
-        </button>
-
-        <button
-            onclick="inverterEquipamentos()"
-            title="Inverter Equipamento A e B">
-            ⇄ Inverter
-        </button>
-
-        <button onclick="mostrarHistorico()">
-            📜 Histórico
-        </button>
-
-        <button onclick="limparTudo()">
-            Limpar
-        </button>
-
+  <div class="toolbar">
+    <div class="campo">
+      <label for="eq1">Equipamento A</label>
+      <input type="text" id="eq1" placeholder="Digite o nome (ex.: ACR01.MGA)" autocomplete="off" spellcheck="false">
+      <div class="sug" id="sug1" role="listbox"></div>
     </div>
+    <button class="btn icon" id="inverter" type="button" title="Inverter A e B" aria-label="Inverter A e B">⇄</button>
+    <div class="campo">
+      <label for="eq2">Equipamento B</label>
+      <input type="text" id="eq2" placeholder="Digite o nome (ex.: PRMGA41-RMC01)" autocomplete="off" spellcheck="false">
+      <div class="sug" id="sug2" role="listbox"></div>
+    </div>
+    <button class="btn pri" id="abrir" type="button">Abrir Ambos</button>
+    <button class="btn" id="verConexoes" type="button" aria-expanded="false">🔌 Conexões</button>
+    <button class="btn" id="verHist" type="button">📜 Histórico</button>
+    <button class="btn" id="limpar" type="button">Limpar</button>
+  </div>
 
+  <div class="linkbar" id="linkbar" aria-live="polite"></div>
 </header>
 
-
-<!-- =========================
-     EQUIPAMENTOS
-========================= -->
-
-<div class="frames">
-
-    <!-- EQUIPAMENTO A -->
-
-    <div class="panel">
-
-        <div
-            class="titulo"
-            id="tituloA">
-            Equipamento A
-        </div>
-
-        <iframe
-            id="frameA"
-            title="Equipamento A">
-        </iframe>
-
+<div class="stage">
+  <div class="frames">
+    <div class="painel">
+      <div class="titulo" id="tituloA"></div>
+      <div class="corpo">
+        <iframe id="frameA" title="Equipamento A"></iframe>
+        <div class="ph" id="phA">Informe o equipamento A, ou escolha uma conexão, para abrir a consulta.</div>
+        <div class="ld" id="ldA"><span><span class="spin"></span>Abrindo equipamento A…</span></div>
+      </div>
     </div>
-
-
-    <!-- EQUIPAMENTO B -->
-
-    <div class="panel">
-
-        <div
-            class="titulo"
-            id="tituloB">
-            Equipamento B
-        </div>
-
-        <iframe
-            id="frameB"
-            title="Equipamento B">
-        </iframe>
-
+    <div class="painel">
+      <div class="titulo" id="tituloB"></div>
+      <div class="corpo">
+        <iframe id="frameB" title="Equipamento B"></iframe>
+        <div class="ph" id="phB">Informe o equipamento B, ou escolha uma conexão, para abrir a consulta.</div>
+        <div class="ld" id="ldB"><span><span class="spin"></span>Abrindo equipamento B…</span></div>
+      </div>
     </div>
+  </div>
 
+  <div class="dwrap" id="drawer" role="dialog" aria-label="Conexões do equipamento">
+    <div class="dsheet">
+      <div class="dh">
+        <button class="chip" id="tabA" type="button" aria-pressed="true">Conexões de A</button>
+        <button class="chip" id="tabB" type="button" aria-pressed="false">Conexões de B</button>
+        <input type="text" id="filtro" placeholder="Filtrar por porta, vizinho ou observação…" autocomplete="off">
+        <button class="x" id="fechaDrawer" type="button" aria-label="Fechar conexões">✕</button>
+      </div>
+      <div class="dl" id="dl"></div>
+    </div>
+  </div>
 </div>
 
-
-<!-- =========================
-     MODAL HISTÓRICO
-========================= -->
-
-<div id="historicoModal">
-
-    <div class="modal-content">
-
-        <div class="modal-header">
-
-            <h2>
-                📜 Histórico de Consultas
-            </h2>
-
-            <button
-                class="btnFecharX"
-                onclick="fecharHistorico()"
-                title="Fechar">
-                ✕
-            </button>
-
-        </div>
-
-        <div id="contadorHistorico">
-            0 consultas
-        </div>
-
-        <div id="listaHistorico"></div>
-
-        <div class="footerModal">
-
-            <button
-                class="btnDanger"
-                id="btnLimparHistorico"
-                onclick="limparHistoricoCompleto()">
-                🗑️ Limpar todo o histórico
-            </button>
-
-            <button onclick="fecharHistorico()">
-                Fechar
-            </button>
-
-        </div>
-
+<!-- Histórico -->
+<div class="overlay" id="mHist">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="hTit">
+    <div class="mh"><h2 id="hTit">📜 Histórico de consultas</h2><button class="x" data-fecha="mHist" type="button" aria-label="Fechar">✕</button></div>
+    <div id="cont"></div>
+    <div id="lista"></div>
+    <div class="mf">
+      <button class="btn danger" id="limpaHist" type="button">🗑️ Limpar todo o histórico</button>
+      <button class="btn" data-fecha="mHist" type="button">Fechar</button>
     </div>
-
+  </div>
 </div>
 
+<!-- Carregar base manualmente -->
+<div class="overlay" id="mBase">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="bTit">
+    <div class="mh"><h2 id="bTit">📂 Base de conexões</h2><button class="x" data-fecha="mBase" type="button" aria-label="Fechar">✕</button></div>
+    <p id="bTxt" style="color:var(--mut);font-size:.9rem"></p>
+    <ul class="erros" id="bErros"></ul>
+    <div class="drop" id="drop" tabindex="0">Arraste o arquivo <b>.json</b> da base aqui ou clique para selecionar</div>
+    <input type="file" id="file" accept=".json,application/json" hidden>
+    <div class="mf"><button class="btn pri" id="tentar" type="button">🔄 Tentar novamente</button><button class="btn" data-fecha="mBase" type="button">Fechar</button></div>
+  </div>
+</div>
+
+<div id="toast" role="status"></div>
 
 <script>
+/* =========================================================
+   CONFIGURAÇÃO — a base de conexões é lida direto do GitHub
+   (repositório público). Atualizou o .json lá, atualizou aqui.
+   ========================================================= */
+const CONFIG = {
+    urlBase: "https://raw.githubusercontent.com/pabloh933/COP-ASSISTENT/main/Dados/Sites_da_m%C3%B3vel_CSV-tratado.json"
+};
 
-/* =========================
-   CONFIGURAÇÃO
-========================= */
-
-const URL_GRBS =
-"http://www-grbs.embratel.net.br/grb/topologia_rede/www/executar_comandos_ssh.php?arg0=_%5DC%3C%3B%3DC%40%3BA&id_rede=33&eqpto=";
-
+const URL_GRBS = "http://www-grbs.embratel.net.br/grb/topologia_rede/www/executar_comandos_ssh.php?arg0=_%5DC%3C%3B%3DC%40%3BA&id_rede=33&eqpto=";
 const CHAVE_HISTORICO = "historicoCOP";
+const LIMITE_HISTORICO = 30;
 
-const LIMITE_HISTORICO = 20;
+const $ = id => document.getElementById(id);
+const esc = t => String(t ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = t => String(t ?? "").trim().toUpperCase().replace(/\s+/g, " ");
+const fmt = n => n.toLocaleString("pt-BR");
+const KS = "¦";   /* separador interno da chave porta A / porta B (as portas podem conter "|") */
 
+/* =========================================================
+   BASE DE CONEXÕES  (Ponta A / porta A / Ponta B / porta B)
+   Indexada pelos DOIS lados: cada equipamento enxerga seus vizinhos.
+   ========================================================= */
+let POR = new Map(), NOMES = [], TOTAL_LINKS = 0, FONTE = "", BASE_OK = false;
 
-/* =========================
+function indexar(rows) {
+  const por = new Map(), vistos = new Set(); let n = 0;
+  const add = (e, l) => { let a = por.get(e); if (!a) por.set(e, a = []); a.push(l); };
+  for (const r of rows) {
+    const a = norm(r["PONTA A"]), b = norm(r["PONTA B"]);
+    if (!a || !b) continue;
+    const ia = String(r["INTERFACES PONTA A"] ?? "").trim(), ib = String(r["INTERFACES PONTA B"] ?? "").trim();
+    const k = a + "|" + ia + "|" + b + "|" + ib;
+    if (vistos.has(k)) continue;                       // ignora linhas repetidas
+    vistos.add(k); n++;
+    const obs = String(r["OBSERVAÇÃO"] ?? "").trim();
+    add(a, { porta: ia, peer: b, portaPeer: ib, obs });
+    if (a !== b) add(b, { porta: ib, peer: a, portaPeer: ia, obs });
+  }
+  POR = por; NOMES = [...por.keys()].sort(); TOTAL_LINKS = n; BASE_OK = true;
+}
+
+/* "Anel IP RAN: X Rede Conectada: Y" -> { anel:"X", tipo:"Y" } */
+function parseObs(o) {
+  if (!o) return { anel: "", tipo: "" };
+  const t = o.match(/Rede Conectada:\s*(.*)$/i), a = o.match(/Anel IP RAN:\s*(.*?)(?=Rede Conectada:|$)/i);
+  return { anel: a ? a[1].trim() : "", tipo: t ? t[1].trim() : (a ? "" : o) };
+}
+function tagsObs(o) {
+  const p = parseObs(o), h = [];
+  if (p.tipo) h.push(`<span class="tag ${/APAGADA/i.test(p.tipo) ? "warn" : "g"}">${esc(p.tipo)}</span>`);
+  if (p.anel) h.push(`<span class="tag">Anel ${esc(p.anel)}</span>`);
+  return h.join(" ");
+}
+
+function buscarNomes(texto, max = 8) {
+  const t = norm(texto); if (t.length < 2) return [];
+  const pre = [], sub = [];
+  for (const n of NOMES) {
+    const i = n.indexOf(t);
+    if (i === 0) { pre.push(n); if (pre.length >= max) break; }
+    else if (i > 0 && sub.length < max) sub.push(n);
+  }
+  return pre.concat(sub).slice(0, max);
+}
+const ligacoesEntre = (a, b) => (POR.get(a) || []).filter(l => l.peer === b);
+
+/* =========================================================
+   ESTADO / ANÁLISE  (identifica conexão direta e portas)
+   ========================================================= */
+const eq1 = $("eq1"), eq2 = $("eq2");
+let estado = { a: "", b: "", diretos: [], sel: null, linkKey: "" };
+let aberto = { a: "", b: "", portaA: "", portaB: "", obs: "" };
+
+function analisar(op = {}) {
+  const a = norm(eq1.value), b = norm(eq2.value);
+  const ka = POR.has(a), kb = POR.has(b);
+
+  if (op.auto && BASE_OK) {                              // preenchimento automático
+    if (ka && !b && POR.get(a).length === 1) { eq2.value = POR.get(a)[0].peer; return analisar({}); }
+    if (kb && !a && POR.get(b).length === 1) { eq1.value = POR.get(b)[0].peer; return analisar({}); }
+    if (ka && !b && POR.get(a).length > 1) abrirDrawer("A");
+    if (kb && !a && POR.get(b).length > 1) abrirDrawer("B");
+  }
+  const diretos = ka && kb && a !== b ? ligacoesEntre(a, b) : [];
+  const sel = diretos.find(l => l.porta + KS + l.portaPeer === estado.linkKey) || diretos[0] || null;
+  estado = { a, b, diretos, sel, linkKey: sel ? sel.porta + KS + sel.portaPeer : "" };
+  renderLinkBar(); atualizarDrawer();
+}
+
+function renderLinkBar() {
+  const el = $("linkbar"), { a, b, diretos, sel } = estado;
+  let cls = "", h = "";
+  if (!BASE_OK || (!a && !b)) { el.style.display = "none"; return; }
+  const ka = POR.has(a), kb = POR.has(b);
+  if (a && b && ka && kb && diretos.length) {
+    cls = "ok";
+    h = `✔ <b>Conectados diretamente</b>`;
+    if (diretos.length > 1) {
+      h += diretos.map((l, i) => `<button class="chip" type="button" data-k="${esc(l.porta + KS + l.portaPeer)}" aria-pressed="${l === sel}">${esc(l.porta)} ↔ ${esc(l.portaPeer)}</button>`).join("");
+    } else {
+      h += ` <span class="p">${esc(sel.porta)}</span> ↔ <span class="p">${esc(sel.portaPeer)}</span>`;
+    }
+    h += ` ${tagsObs(sel.obs)}`;
+    if (diretos.length > 1) h += ` <span class="tag">${diretos.length} links entre os dois</span>`;
+  } else if (a && b && ka && kb) {
+    cls = "warn"; h = `Não há conexão direta registrada entre <b>${esc(a)}</b> e <b>${esc(b)}</b>. Use “Conexões” para ver os vizinhos de cada um.`;
+  } else {
+    const faltam = [a && !ka ? a : "", b && !kb ? b : ""].filter(Boolean);
+    if (faltam.length) { cls = "warn"; h = `${faltam.map(esc).join(" e ")} não ${faltam.length > 1 ? "constam" : "consta"} na base — a consulta abre mesmo assim.`; }
+    const so = ka && !b ? a : (kb && !a ? b : "");
+    if (so) { cls = ""; h = `<b>${esc(so)}</b> tem ${fmt(POR.get(so).length)} conexão(ões).`; }
+    if (ka && kb === false && b) { /* mantém aviso */ }
+    if (so || (ka && !kb) || (kb && !ka)) h += ` <button class="mini" type="button" data-ver="${ka ? "A" : "B"}">Ver conexões</button>`;
+  }
+  el.className = "linkbar " + cls; el.style.display = h ? "flex" : "none"; el.innerHTML = h;
+}
+$("linkbar").addEventListener("click", e => {
+  const c = e.target.closest("[data-k]"); if (c) { estado.linkKey = c.dataset.k; analisar(); return; }
+  const v = e.target.closest("[data-ver]"); if (v) abrirDrawer(v.dataset.ver);
+});
+
+/* =========================================================
+   GAVETA DE CONEXÕES (clicar numa linha preenche e abre tudo)
+   ========================================================= */
+let drawerLado = "A", drawerLinks = [];
+function abrirDrawer(lado) { drawerLado = lado || drawerLado; $("drawer").classList.add("open"); $("verConexoes").setAttribute("aria-expanded", "true"); atualizarDrawer(); }
+function fecharDrawer() { $("drawer").classList.remove("open"); $("verConexoes").setAttribute("aria-expanded", "false"); }
+
+function atualizarDrawer() {
+  if (!$("drawer").classList.contains("open")) return;
+  $("tabA").setAttribute("aria-pressed", drawerLado === "A"); $("tabB").setAttribute("aria-pressed", drawerLado === "B");
+  const nome = drawerLado === "A" ? estado.a : estado.b, dl = $("dl");
+  if (!BASE_OK) { dl.innerHTML = `<div class="vazio">A base de conexões ainda não foi carregada.</div>`; return; }
+  if (!nome) { dl.innerHTML = `<div class="vazio">Digite o equipamento ${drawerLado} para ver as conexões dele.</div>`; return; }
+  if (!POR.has(nome)) { dl.innerHTML = `<div class="vazio"><b>${esc(nome)}</b> não consta na base de conexões.</div>`; return; }
+  const f = norm($("filtro").value);
+  drawerLinks = POR.get(nome).filter(l => !f || (l.porta + " " + l.peer + " " + l.portaPeer + " " + l.obs).toUpperCase().includes(f));
+  if (!drawerLinks.length) { dl.innerHTML = `<div class="vazio">Nenhuma conexão corresponde ao filtro.</div>`; return; }
+  dl.innerHTML = `<div class="vazio" style="padding:.4rem 0;text-align:left">${fmt(drawerLinks.length)} conexão(ões) de <b>${esc(nome)}</b> — clique numa linha para preencher e abrir os dois.</div>` +
+    drawerLinks.slice(0, 300).map((l, i) => `<button class="lrow" type="button" data-i="${i}">
+      <span><small>porta de ${esc(nome)}</small><b>${esc(l.porta || "—")}</b></span><span>↔</span>
+      <span><small>${esc(l.portaPeer || "—")}</small><b>${esc(l.peer)}</b></span>
+      <span class="obs">${tagsObs(l.obs)}</span></button>`).join("");
+}
+$("dl").addEventListener("click", e => {
+  const r = e.target.closest(".lrow"); if (!r) return;
+  const l = drawerLinks[+r.dataset.i]; if (!l) return;
+  if (drawerLado === "A") { eq2.value = l.peer; estado.linkKey = l.porta + KS + l.portaPeer; }
+  else { eq1.value = l.peer; estado.linkKey = l.portaPeer + KS + l.porta; }
+  analisar(); fecharDrawer(); abrir();
+});
+$("tabA").onclick = () => { drawerLado = "A"; atualizarDrawer(); };
+$("tabB").onclick = () => { drawerLado = "B"; atualizarDrawer(); };
+$("filtro").addEventListener("input", atualizarDrawer);
+$("fechaDrawer").onclick = fecharDrawer;
+$("drawer").addEventListener("click", e => { if (e.target === $("drawer")) fecharDrawer(); });
+$("verConexoes").onclick = () => $("drawer").classList.contains("open") ? fecharDrawer() : abrirDrawer(estado.a || !estado.b ? "A" : "B");
+
+/* =========================================================
    ABRIR EQUIPAMENTOS
-========================= */
+   ========================================================= */
+function painel(lado, nome) {
+  const frame = $("frame" + lado);
+  $("ph" + lado).style.display = nome ? "none" : "grid";
+  $("ld" + lado).classList.toggle("on", !!nome);
+  frame.src = nome ? URL_GRBS + encodeURIComponent(nome) : "about:blank";
+}
+$("frameA").addEventListener("load", () => $("ldA").classList.remove("on"));
+$("frameB").addEventListener("load", () => $("ldB").classList.remove("on"));
 
-function abrirAmbos() {
+function renderTitulos() {
+  const mk = (lado, nome, porta, obs) => {
+    if (!nome) return `<span class="lado">${lado}</span><span class="nome" style="color:var(--muted);font-weight:500">Equipamento ${lado}</span>`;
+    return `<span class="lado">${lado}</span><span class="nome">${esc(nome)}</span>` +
+      (porta ? `<span class="porta" title="Porta identificada na base">${esc(porta)}</span>` : "") +
+      (obs ? tagsObs(obs) : "") +
+      `<span class="acoes">
+        <button class="ia" type="button" data-copy="${esc(nome)}" title="Copiar nome do equipamento">Copiar nome</button>
+        ${porta ? `<button class="ia" type="button" data-copy="${esc(porta)}" title="Copiar porta">Copiar porta</button>` : ""}
+        <a class="ia" href="${URL_GRBS + encodeURIComponent(nome)}" target="_blank" rel="noopener" title="Abrir em nova aba">↗</a></span>`;
+  };
+  $("tituloA").innerHTML = mk("A", aberto.a, aberto.portaA, aberto.obs);
+  $("tituloB").innerHTML = mk("B", aberto.b, aberto.portaB, "");
+}
+document.querySelector(".frames").addEventListener("click", e => {
+  const c = e.target.closest("[data-copy]"); if (c) copiar(c.dataset.copy, "✅ Copiado: " + c.dataset.copy);
+});
 
-    const equipamentoA =
-        document
-        .getElementById("eq1")
-        .value
-        .trim();
-
-    const equipamentoB =
-        document
-        .getElementById("eq2")
-        .value
-        .trim();
-
-
-    if (!equipamentoA || !equipamentoB) {
-
-        alert("Informe os dois equipamentos.");
-
-        return;
-
-    }
-
-
-    document
-        .getElementById("tituloA")
-        .innerText = equipamentoA;
-
-
-    document
-        .getElementById("tituloB")
-        .innerText = equipamentoB;
-
-
-    document
-        .getElementById("frameA")
-        .src =
-        URL_GRBS +
-        encodeURIComponent(equipamentoA);
-
-
-    document
-        .getElementById("frameB")
-        .src =
-        URL_GRBS +
-        encodeURIComponent(equipamentoB);
-
-
-    salvarHistorico(
-        equipamentoA,
-        equipamentoB
-    );
-
+function abrir() {
+  const a = norm(eq1.value), b = norm(eq2.value);
+  if (!a && !b) { toast("Informe pelo menos um equipamento.", true); eq1.focus(); return; }
+  analisar();
+  const sel = a && b ? estado.sel : null;
+  aberto = { a, b, portaA: sel ? sel.porta : "", portaB: sel ? sel.portaPeer : "", obs: sel ? sel.obs : "" };
+  painel("A", a); painel("B", b); renderTitulos();
+  salvarHistorico(aberto);
+  const h = new URLSearchParams(); if (a) h.set("a", a); if (b) h.set("b", b);
+  try { history.replaceState(null, "", "#" + h.toString()); } catch (_) {}
 }
 
-
-/* =========================
-   INVERTER
-========================= */
-
-function inverterEquipamentos() {
-
-    const campoA =
-        document.getElementById("eq1");
-
-    const campoB =
-        document.getElementById("eq2");
-
-
-    const equipamentoA =
-        campoA.value;
-
-    const equipamentoB =
-        campoB.value;
-
-
-    campoA.value =
-        equipamentoB;
-
-    campoB.value =
-        equipamentoA;
-
+function inverter() {
+  const t = eq1.value; eq1.value = eq2.value; eq2.value = t;
+  const [pa, pb] = estado.linkKey.split(KS); if (estado.linkKey) estado.linkKey = pb + KS + pa;
+  analisar();
 }
-
-
-/* =========================
-   HISTÓRICO
-========================= */
-
-function carregarHistorico() {
-
-    try {
-
-        const dados =
-            localStorage.getItem(
-                CHAVE_HISTORICO
-            );
-
-        if (!dados) {
-            return [];
-        }
-
-
-        const historico =
-            JSON.parse(dados);
-
-
-        if (!Array.isArray(historico)) {
-            return [];
-        }
-
-
-        return historico;
-
-    } catch (erro) {
-
-        console.error(
-            "Erro ao carregar histórico:",
-            erro
-        );
-
-        return [];
-
-    }
-
-}
-
-
-/* =========================
-   SALVAR HISTÓRICO
-========================= */
-
-function salvarHistorico(eqA, eqB) {
-
-    let historico =
-        carregarHistorico();
-
-
-    /*
-        Evita duplicar a consulta
-        caso ela seja exatamente igual
-        à última consulta realizada.
-    */
-
-    if (
-        historico.length > 0 &&
-        historico[0].eqA === eqA &&
-        historico[0].eqB === eqB
-    ) {
-
-        return;
-
-    }
-
-
-    historico.unshift({
-
-        eqA: eqA,
-
-        eqB: eqB,
-
-        data:
-            new Date()
-            .toLocaleString("pt-BR")
-
-    });
-
-
-    /*
-        Mantém somente os registros
-        mais recentes.
-    */
-
-    historico =
-        historico.slice(
-            0,
-            LIMITE_HISTORICO
-        );
-
-
-    localStorage.setItem(
-
-        CHAVE_HISTORICO,
-
-        JSON.stringify(historico)
-
-    );
-
-}
-
-
-/* =========================
-   MOSTRAR HISTÓRICO
-========================= */
-
-function mostrarHistorico() {
-
-    const lista =
-        document.getElementById(
-            "listaHistorico"
-        );
-
-    const contador =
-        document.getElementById(
-            "contadorHistorico"
-        );
-
-    const btnLimpar =
-        document.getElementById(
-            "btnLimparHistorico"
-        );
-
-
-    const historico =
-        carregarHistorico();
-
-
-    lista.innerHTML = "";
-
-
-    /*
-        CONTADOR
-    */
-
-    const total =
-        historico.length;
-
-
-    contador.textContent =
-        total === 1
-        ? "1 consulta salva"
-        : `${total} consultas salvas`;
-
-
-    /*
-        HISTÓRICO VAZIO
-    */
-
-    if (total === 0) {
-
-        lista.innerHTML =
-            `
-            <div class="historicoVazio">
-
-                Nenhuma consulta
-                encontrada no histórico.
-
-            </div>
-            `;
-
-
-        btnLimpar.style.display =
-            "none";
-
-    }
-
-    else {
-
-        btnLimpar.style.display =
-            "inline-block";
-
-
-        historico.forEach(
-            (item, index) => {
-
-
-                const div =
-                    document
-                    .createElement("div");
-
-
-                div.className =
-                    "itemHistorico";
-
-
-                /*
-                    Conteúdo principal
-                */
-
-                const conteudo =
-                    document
-                    .createElement("div");
-
-
-                conteudo.className =
-                    "itemHistoricoConteudo";
-
-
-                /*
-                    Equipamentos
-                */
-
-                const equipamentos =
-                    document
-                    .createElement("div");
-
-
-                equipamentos.className =
-                    "equipamentosHistorico";
-
-
-                const equipamentoA =
-                    document
-                    .createElement("strong");
-
-
-                equipamentoA.textContent =
-                    item.eqA;
-
-
-                const separador =
-                    document
-                    .createTextNode(" ↔ ");
-
-
-                const equipamentoB =
-                    document
-                    .createElement("strong");
-
-
-                equipamentoB.textContent =
-                    item.eqB;
-
-
-                const quebra =
-                    document
-                    .createElement("br");
-
-
-                const data =
-                    document
-                    .createElement("span");
-
-
-                data.className =
-                    "dataHistorico";
-
-
-                data.textContent =
-                    item.data || "";
-
-
-                equipamentos.appendChild(
-                    equipamentoA
-                );
-
-                equipamentos.appendChild(
-                    separador
-                );
-
-                equipamentos.appendChild(
-                    equipamentoB
-                );
-
-                equipamentos.appendChild(
-                    quebra
-                );
-
-                equipamentos.appendChild(
-                    data
-                );
-
-
-                /*
-                    BOTÃO LIXEIRA
-                */
-
-                const botaoExcluir =
-                    document
-                    .createElement("button");
-
-
-                botaoExcluir.className =
-                    "btnExcluir";
-
-
-                botaoExcluir.type =
-                    "button";
-
-
-                botaoExcluir.title =
-                    "Excluir esta consulta";
-
-
-                botaoExcluir.textContent =
-                    "🗑️";
-
-
-                /*
-                    Exclusão individual
-                */
-
-                botaoExcluir
-                    .addEventListener(
-                        "click",
-                        function(event) {
-
-                            event
-                                .stopPropagation();
-
-                            excluirHistorico(
-                                index
-                            );
-
-                        }
-                    );
-
-
-                conteudo.appendChild(
-                    equipamentos
-                );
-
-                conteudo.appendChild(
-                    botaoExcluir
-                );
-
-
-                div.appendChild(
-                    conteudo
-                );
-
-
-                /*
-                    Clicar no registro
-                    abre novamente a consulta.
-                */
-
-                div.addEventListener(
-                    "click",
-                    function() {
-
-                        document
-                            .getElementById(
-                                "eq1"
-                            )
-                            .value =
-                            item.eqA;
-
-
-                        document
-                            .getElementById(
-                                "eq2"
-                            )
-                            .value =
-                            item.eqB;
-
-
-                        fecharHistorico();
-
-
-                        abrirAmbos();
-
-                    }
-                );
-
-
-                lista.appendChild(
-                    div
-                );
-
-            }
-        );
-
-    }
-
-
-    document
-        .getElementById(
-            "historicoModal"
-        )
-        .style
-        .display =
-        "block";
-
-}
-
-
-/* =========================
-   EXCLUIR INDIVIDUAL
-========================= */
-
-function excluirHistorico(index) {
-
-    const historico =
-        carregarHistorico();
-
-
-    if (
-        index < 0 ||
-        index >= historico.length
-    ) {
-
-        return;
-
-    }
-
-
-    historico.splice(
-        index,
-        1
-    );
-
-
-    localStorage.setItem(
-
-        CHAVE_HISTORICO,
-
-        JSON.stringify(historico)
-
-    );
-
-
-    /*
-        Atualiza o modal
-        imediatamente.
-    */
-
-    mostrarHistorico();
-
-}
-
-
-/* =========================
-   LIMPAR TODO HISTÓRICO
-========================= */
-
-function limparHistoricoCompleto() {
-
-    const historico =
-        carregarHistorico();
-
-
-    if (historico.length === 0) {
-
-        return;
-
-    }
-
-
-    const confirmar =
-        confirm(
-            "Deseja apagar todo o histórico de consultas?"
-        );
-
-
-    if (!confirmar) {
-
-        return;
-
-    }
-
-
-    localStorage.removeItem(
-        CHAVE_HISTORICO
-    );
-
-
-    /*
-        Atualiza contador/lista
-        sem fechar o modal.
-    */
-
-    mostrarHistorico();
-
-}
-
-
-/* =========================
-   FECHAR HISTÓRICO
-========================= */
-
-function fecharHistorico() {
-
-    document
-        .getElementById(
-            "historicoModal"
-        )
-        .style
-        .display =
-        "none";
-
-}
-
-
-/* =========================
-   LIMPAR EQUIPAMENTOS
-========================= */
-
 function limparTudo() {
-
-    document
-        .getElementById("eq1")
-        .value =
-        "";
-
-
-    document
-        .getElementById("eq2")
-        .value =
-        "";
-
-
-    document
-        .getElementById(
-            "tituloA"
-        )
-        .innerText =
-        "Equipamento A";
-
-
-    document
-        .getElementById(
-            "tituloB"
-        )
-        .innerText =
-        "Equipamento B";
-
-
-    document
-        .getElementById(
-            "frameA"
-        )
-        .src =
-        "";
-
-
-    document
-        .getElementById(
-            "frameB"
-        )
-        .src =
-        "";
-
-
-    document
-        .getElementById("eq1")
-        .focus();
-
+  eq1.value = eq2.value = ""; estado.linkKey = "";
+  aberto = { a: "", b: "", portaA: "", portaB: "", obs: "" };
+  painel("A", ""); painel("B", ""); renderTitulos(); analisar(); fecharDrawer();
+  try { history.replaceState(null, "", location.pathname + location.search); } catch (_) {}
+  eq1.focus();
 }
 
+/* =========================================================
+   AUTOCOMPLETE
+   ========================================================= */
+function autocompletar(input, box, lado) {
+  let itens = [], on = -1, tm;
+  const fechar = () => { box.style.display = "none"; box.innerHTML = ""; on = -1; itens = []; };
+  const escolher = nome => { input.value = nome; fechar(); analisar({ auto: true }); };
+  input.addEventListener("input", () => {
+    analisar();
+    clearTimeout(tm);
+    tm = setTimeout(() => {
+      itens = BASE_OK ? buscarNomes(input.value) : []; on = -1;
+      if (!itens.length || (itens.length === 1 && itens[0] === norm(input.value))) return fechar();
+      const t = norm(input.value);
+      box.innerHTML = itens.map((n, i) => {
+        const p = n.indexOf(t);
+        return `<div role="option" data-i="${i}"><span>${esc(n.slice(0, p))}<mark>${esc(t)}</mark>${esc(n.slice(p + t.length))}</span><small>${fmt(POR.get(n).length)} conexões</small></div>`;
+      }).join("");
+      box.style.display = "block";
+    }, 70);
+  });
+  input.addEventListener("keydown", e => {
+    const rows = [...box.children];
+    if (e.key === "ArrowDown" || e.key === "ArrowUp") {
+      if (!rows.length) return; e.preventDefault();
+      rows.forEach(r => r.classList.remove("on"));
+      on = (on + (e.key === "ArrowDown" ? 1 : -1) + rows.length) % rows.length; rows[on].classList.add("on");
+    } else if (e.key === "Enter") {
+      e.preventDefault();
+      if (on > -1 && itens[on]) escolher(itens[on]); else { fechar(); abrir(); }
+    } else if (e.key === "Escape") fechar();
+  });
+  box.addEventListener("mousedown", e => { const r = e.target.closest("[data-i]"); if (r) { e.preventDefault(); escolher(itens[+r.dataset.i]); } });
+  input.addEventListener("blur", () => setTimeout(fechar, 120));
+}
+autocompletar(eq1, $("sug1"), "A"); autocompletar(eq2, $("sug2"), "B");
 
-/* =========================
-   ENTER NOS CAMPOS
-========================= */
+/* =========================================================
+   HISTÓRICO
+   ========================================================= */
+function lerHistorico() {
+  try { const h = JSON.parse(localStorage.getItem(CHAVE_HISTORICO) || "[]"); return Array.isArray(h) ? h : []; } catch (_) { return []; }
+}
+function gravarHistorico(h) { try { localStorage.setItem(CHAVE_HISTORICO, JSON.stringify(h)); } catch (_) {} }
+function salvarHistorico(o) {
+  let h = lerHistorico();
+  if (h[0] && h[0].eqA === o.a && h[0].eqB === o.b) return;
+  h.unshift({ eqA: o.a, eqB: o.b, portaA: o.portaA, portaB: o.portaB, data: new Date().toLocaleString("pt-BR") });
+  gravarHistorico(h.slice(0, LIMITE_HISTORICO));
+}
+function mostrarHistorico() {
+  const h = lerHistorico(), lista = $("lista");
+  $("cont").textContent = h.length === 1 ? "1 consulta salva" : `${h.length} consultas salvas`;
+  $("limpaHist").style.display = h.length ? "inline-block" : "none";
+  lista.innerHTML = h.length ? "" : `<div class="vazio">Nenhuma consulta no histórico.</div>`;
+  h.forEach((it, i) => {
+    const d = document.createElement("div"); d.className = "item";
+    const port = (p) => p ? ` <i>(${esc(p)})</i>` : "";
+    d.innerHTML = `<div class="t"><b>${esc(it.eqA || "—")}</b>${port(it.portaA)} ↔ <b>${esc(it.eqB || "—")}</b>${port(it.portaB)}<small>${esc(it.data || "")}</small></div>
+      <button class="btn danger icon" type="button" title="Excluir esta consulta">🗑️</button>`;
+    d.querySelector("button").addEventListener("click", ev => { ev.stopPropagation(); const x = lerHistorico(); x.splice(i, 1); gravarHistorico(x); mostrarHistorico(); });
+    d.addEventListener("click", () => {
+      eq1.value = it.eqA || ""; eq2.value = it.eqB || "";
+      estado.linkKey = it.portaA || it.portaB ? (it.portaA || "") + KS + (it.portaB || "") : "";
+      $("mHist").style.display = "none"; analisar(); abrir();
+    });
+    lista.appendChild(d);
+  });
+  $("mHist").style.display = "block";
+}
+$("verHist").onclick = mostrarHistorico;
+$("limpaHist").onclick = () => { if (lerHistorico().length && confirm("Deseja apagar todo o histórico de consultas?")) { try { localStorage.removeItem(CHAVE_HISTORICO); } catch (_) {} mostrarHistorico(); } };
 
-document
-    .getElementById("eq1")
-    .addEventListener(
-        "keydown",
-        function(event) {
+/* =========================================================
+   CARGA DA BASE: servidor local → GitHub → jsDelivr → cópia salva → arquivo manual
+   ========================================================= */
+function fontes() {
+  return [{ nome: "GitHub", url: CONFIG.urlBase }];
+}
+const idb = (modo, val) => new Promise(res => {
+  try {
+    const o = indexedDB.open("cop_analyzer", 1);
+    o.onupgradeneeded = () => o.result.createObjectStore("k");
+    o.onerror = () => res(null);
+    o.onsuccess = () => { const st = o.result.transaction("k", modo === "get" ? "readonly" : "readwrite").objectStore("k");
+      if (modo === "get") { const g = st.get("rows"); g.onsuccess = () => res(g.result || null); g.onerror = () => res(null); }
+      else { const p = st.put(val, "rows"); p.onsuccess = () => res(true); p.onerror = () => res(null); } };
+  } catch (_) { res(null); }
+});
+const statusBase = h => $("base").innerHTML = h;
 
-            if (event.key === "Enter") {
+async function baixar(url) {
+  const ctl = new AbortController(), tm = setTimeout(() => ctl.abort(), 90000);
+  try {
+    const r = await fetch(url, { cache: "no-cache", signal: ctl.signal });
+    if (!r.ok) throw new Error("HTTP " + r.status);
+    return await r.json();
+  } finally { clearTimeout(tm); }
+}
+function usarBase(rows, fonte, salvar) {
+  if (!Array.isArray(rows) || !rows.length || !("PONTA A" in rows[0])) throw new Error("formato inesperado");
+  indexar(rows); FONTE = fonte;
+  statusBase(`<span><b>${fmt(TOTAL_LINKS)}</b> conexões • <b>${fmt(POR.size)}</b> equipamentos • fonte: ${esc(fonte)}</span> <a id="lnkAtualizar">atualizar</a> <a id="lnkArquivo">carregar arquivo</a>`);
+  $("lnkAtualizar").onclick = carregar; $("lnkArquivo").onclick = () => abrirModalBase();
+  if (salvar) idb("put", rows);
+  $("mBase").style.display = "none";
+  analisar();
+}
+async function carregar() {
+  statusBase(`<span><span class="spin"></span>carregando base de conexões…</span>`);
+  const erros = [];
+  for (const f of fontes()) {
+    try { usarBase(await baixar(f.url), f.nome, true); return; }
+    catch (e) { erros.push([f.nome, f.url, e.name === "AbortError" ? "tempo esgotado" : e.message]); }
+  }
+  const c = await idb("get");
+  if (c) { try { usarBase(c, "cópia salva neste navegador", false); toast("⚠️ Base online indisponível — usando a última cópia salva."); return; } catch (_) {} }
+  statusBase(`<span>⚠️ base não carregada</span> <a id="lnkArquivo">carregar arquivo</a>`);
+  $("lnkArquivo").onclick = () => abrirModalBase(erros);
+  abrirModalBase(erros);
+}
+function abrirModalBase(erros = []) {
+  $("bTxt").textContent = "Não consegui baixar a base do GitHub. Confira a conexão e se o repositório é público — ou selecione o arquivo .json manualmente (ele fica salvo neste navegador para as próximas vezes).";
+  $("bErros").innerHTML = erros.map(([n, u, m]) => `<li><b>${esc(n)}</b> — ${esc(m)}<br>${esc(u)}</li>`).join("");
+  $("mBase").style.display = "block";
+}
+function lerArquivo(f) {
+  if (!f) return;
+  statusBase(`<span><span class="spin"></span>lendo arquivo…</span>`);
+  f.text().then(t => usarBase(JSON.parse(t), "arquivo selecionado", true)).catch(() => { toast("⚠️ Arquivo inválido.", true); statusBase("<span>⚠️ base não carregada</span>"); });
+}
+const drop = $("drop"), file = $("file");
+drop.onclick = () => file.click();
+drop.onkeydown = e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); file.click(); } };
+file.onchange = () => lerArquivo(file.files[0]);
+["dragover", "dragenter"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add("over"); }));
+["dragleave", "drop"].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.remove("over"); }));
+drop.addEventListener("drop", e => lerArquivo(e.dataTransfer.files[0]));
+$("tentar").onclick = carregar;
 
-                abrirAmbos();
+/* =========================================================
+   UTILIDADES / EVENTOS GERAIS
+   ========================================================= */
+async function copiar(t, msg) {
+  try { await navigator.clipboard.writeText(t); }
+  catch (_) { const a = document.createElement("textarea"); a.value = t; a.style.cssText = "position:fixed;opacity:0"; document.body.appendChild(a); a.select(); try { document.execCommand("copy"); } finally { a.remove(); } }
+  toast(msg || "✅ Copiado!");
+}
+let tt; function toast(m, aviso) { const t = $("toast"); t.textContent = m; t.className = "show" + (aviso ? " warn" : ""); clearTimeout(tt); tt = setTimeout(() => t.className = "", 2400); }
 
-            }
+$("abrir").onclick = abrir; $("limpar").onclick = limparTudo; $("inverter").onclick = inverter;
+document.querySelectorAll("[data-fecha]").forEach(b => b.onclick = () => $(b.dataset.fecha).style.display = "none");
+document.querySelectorAll(".overlay").forEach(o => o.addEventListener("click", e => { if (e.target === o) o.style.display = "none"; }));
+document.addEventListener("keydown", e => { if (e.key === "Escape") { fecharDrawer(); document.querySelectorAll(".overlay").forEach(o => o.style.display = "none"); } });
 
-        }
-    );
-
-
-document
-    .getElementById("eq2")
-    .addEventListener(
-        "keydown",
-        function(event) {
-
-            if (event.key === "Enter") {
-
-                abrirAmbos();
-
-            }
-
-        }
-    );
-
-
-/* =========================
-   FECHAR CLICANDO FORA
-========================= */
-
-document
-    .getElementById(
-        "historicoModal"
-    )
-    .addEventListener(
-        "click",
-        function(event) {
-
-            if (
-                event.target ===
-                this
-            ) {
-
-                fecharHistorico();
-
-            }
-
-        }
-    );
-
-
-/* =========================
-   ESC FECHA HISTÓRICO
-========================= */
-
-document
-    .addEventListener(
-        "keydown",
-        function(event) {
-
-            if (
-                event.key ===
-                "Escape"
-            ) {
-
-                fecharHistorico();
-
-            }
-
-        }
-    );
-
+/* link direto: ...#a=EQUIP1&b=EQUIP2 abre as duas consultas */
+function aplicarHash() {
+  const h = new URLSearchParams(location.hash.slice(1)), a = h.get("a"), b = h.get("b");
+  if (a || b) { eq1.value = a || ""; eq2.value = b || ""; analisar(); abrir(); }
+}
+renderTitulos();
+carregar().then(aplicarHash);
 </script>
-
 </body>
 </html>
