@@ -87,6 +87,10 @@ iframe{width:100%;height:100%;border:0;background:#fff}
 .ld{display:none;background:rgba(241,245,249,.9);color:var(--ink);z-index:2}
 .ld.on{display:grid}
 .ld .spin,.ph .spin{border-color:rgba(10,37,69,.2);border-top-color:var(--accent)}
+/* aviso de carregamento: pequeno, no canto, NUNCA cobre a página da consulta */
+.ld{inset:auto;top:.7rem;right:.9rem;display:none;padding:.4rem .9rem;border-radius:999px;background:var(--primary);color:#fff;font-size:.8rem;box-shadow:0 8px 20px -6px rgba(0,0,0,.5);pointer-events:none;place-items:initial}
+.ld.on{display:block}
+.ld .spin{border-color:rgba(255,255,255,.3);border-top-color:var(--accent)}
 
 /* ---------- Conexões: folha sobre os painéis (não empurra o layout) ---------- */
 .dwrap{display:none;position:absolute;inset:0;z-index:30;background:rgba(2,8,23,.55);padding:.8rem;overflow:auto}
@@ -153,7 +157,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       <input type="text" id="eq1" placeholder="Digite o nome (ex.: ACR01.MGA)" autocomplete="off" spellcheck="false">
       <div class="sug" id="sug1" role="listbox"></div>
     </div>
-    <button class="btn icon" id="inverter" type="button" title="Inverter A e B" aria-label="Inverter A e B">⇄</button>
+    <button class="btn" id="inverter" type="button" title="Inverter Equipamento A e B">⇄ Inverter</button>
     <div class="campo">
       <label for="eq2">Equipamento B</label>
       <input type="text" id="eq2" placeholder="Digite o nome (ex.: PRMGA41-RMC01)" autocomplete="off" spellcheck="false">
@@ -175,7 +179,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       <div class="corpo">
         <iframe id="frameA" title="Equipamento A"></iframe>
         <div class="ph" id="phA">Informe o equipamento A, ou escolha uma conexão, para abrir a consulta.</div>
-        <div class="ld" id="ldA"><span><span class="spin"></span>Abrindo equipamento A…</span></div>
+        <div class="ld" id="ldA"><span class="spin"></span>Carregando…</div>
       </div>
     </div>
     <div class="painel">
@@ -183,7 +187,7 @@ iframe{width:100%;height:100%;border:0;background:#fff}
       <div class="corpo">
         <iframe id="frameB" title="Equipamento B"></iframe>
         <div class="ph" id="phB">Informe o equipamento B, ou escolha uma conexão, para abrir a consulta.</div>
-        <div class="ld" id="ldB"><span><span class="spin"></span>Abrindo equipamento B…</span></div>
+        <div class="ld" id="ldB"><span class="spin"></span>Carregando…</div>
       </div>
     </div>
   </div>
@@ -390,10 +394,13 @@ $("verConexoes").onclick = () => $("drawer").classList.contains("open") ? fechar
 /* =========================================================
    ABRIR EQUIPAMENTOS
    ========================================================= */
+const tmLoad = {};
 function painel(lado, nome) {
   const frame = $("frame" + lado);
   $("ph" + lado).style.display = nome ? "none" : "grid";
   $("ld" + lado).classList.toggle("on", !!nome);
+  clearTimeout(tmLoad[lado]);
+  if (nome) tmLoad[lado] = setTimeout(() => $("ld" + lado).classList.remove("on"), 5000);   // some o aviso mesmo se a página demorar a "terminar"
   frame.src = nome ? URL_GRBS + encodeURIComponent(nome) : "about:blank";
 }
 $("frameA").addEventListener("load", () => $("ldA").classList.remove("on"));
