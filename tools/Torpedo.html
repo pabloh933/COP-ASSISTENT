@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>COP REDE - Editor de Torpedos (Premium B&W)</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #000000;
+            --bg-surface: rgba(10, 10, 10, 0.7);
+            --bg-element: #111111;
+            --border-color: #222222;
+            --text-main: #FFFFFF;
+            --text-muted: #888888;
+            --sidebar-w: 320px;
+            --radius-soft: 8px;
+            --radius-hard: 4px;
+            --transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-deep);
+            background-image: radial-gradient(#222 1px, transparent 1px);
+            background-size: 24px 24px;
+            margin: 0;
+            display: flex;
+            height: 100vh;
+            color: var(--text-main);
+            overflow: hidden;
+        }
+
+        h1, h2, strong { font-weight: 800; }
+        .support-text { font-weight: 300; letter-spacing: 0.08em; font-size: 0.70rem; text-transform: uppercase; }
+
+        /* BARRA LATERAL */
+        .sidebar {
+            width: var(--sidebar-w);
+            background: var(--bg-surface);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            z-index: 10;
+        }
+
+        .sidebar-header {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .sidebar-header h1 {
+            margin: 0;
+            font-size: 1.1rem;
+            letter-spacing: -0.02em;
+        }
+
+        .btn-new {
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border: none;
+            margin: 16px 20px;
+            padding: 12px;
+            font-weight: 800;
+            border-radius: var(--radius-soft);
+            cursor: pointer;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            transition: var(--transition);
+        }
+
+        .btn-new:hover { transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.1); }
+        .btn-new:active { transform: translateY(1px) scale(0.98); }
+
+        .torpedo-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .torpedo-list::-webkit-scrollbar { width: 4px; }
+        .torpedo-list::-webkit-scrollbar-thumb { background: var(--border-color); border-radius: 4px; }
+
+        .torpedo-item {
+            background: var(--bg-element);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: var(--radius-soft);
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            transition: var(--transition);
+        }
+
+        .torpedo-item:hover { background: #1a1a1a; }
+        
+        .torpedo-item.active {
+            background: var(--text-main);
+            color: var(--bg-deep);
+            border-color: var(--text-main);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(255,255,255,0.1);
+        }
+
+        .torpedo-item.atrasado { border: 1px dashed var(--text-muted); background: transparent; }
+
+        .torpedo-header-row { display: flex; justify-content: space-between; align-items: center; }
+
+        .torpedo-title { 
+            font-weight: 800; 
+            font-size: 0.9rem; 
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        
+        .btn-edit-name {
+            background: none; border: none; cursor: pointer;
+            font-size: 12px; opacity: 0.5; transition: var(--transition);
+        }
+        .torpedo-item:hover .btn-edit-name { opacity: 1; }
+        .torpedo-item.active .btn-edit-name { filter: grayscale(100%) brightness(0); opacity: 0.8; }
+
+        .torpedo-timer { font-weight: 300; font-size: 0.7rem; letter-spacing: 0.05em; color: var(--text-muted); }
+        .torpedo-item.active .torpedo-timer { color: #444; font-weight: 800; }
+        .torpedo-timer.red { color: var(--text-main); font-weight: 800; }
+
+        /* ÁREA PRINCIPAL */
+        .main-content {
+            flex: 1; display: flex; flex-direction: column; position: relative; overflow: hidden;
+        }
+
+        .top-actions {
+            padding: 16px 30px;
+            display: flex; justify-content: space-between; align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(0,0,0,0.4); backdrop-filter: blur(10px);
+        }
+
+        #activeTimerDisplay { font-weight: 300; font-size: 0.85rem; letter-spacing: 0.1em; text-transform: uppercase; }
+
+        .btn-action {
+            padding: 10px 20px; border-radius: var(--radius-hard); font-weight: 800; cursor: pointer;
+            text-transform: uppercase; letter-spacing: 0.05em; font-size: 0.7rem; transition: var(--transition);
+        }
+
+        .btn-copy { background: transparent; color: var(--text-main); border: 1px solid var(--text-main); margin-right: 10px; }
+        .btn-copy:hover { background: rgba(255,255,255,0.1); }
+        .btn-copy:active { transform: scale(0.96); }
+
+        .btn-close { background: transparent; color: var(--text-main); border: 1px solid var(--border-color); opacity: 0.15; filter: blur(0.5px); cursor: not-allowed; }
+        .btn-close.ready { background: var(--text-main); color: var(--bg-deep); border-color: var(--text-main); opacity: 1; filter: blur(0); cursor: pointer; }
+        .btn-close.ready:hover { transform: translateY(-2px); box-shadow: 0 0 10px rgba(255,255,255,0.2); }
+        .btn-close.ready:active { transform: translateY(1px) scale(0.96); }
+
+        .notepad-wrapper {
+            flex: 1; padding: 10px 20px; overflow: hidden;
+            display: flex; justify-content: center; align-items: center;
+        }
+
+        .notepad {
+            background: var(--bg-element);
+            padding: 24px 32px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-soft);
+            width: 100%; max-width: 800px;
+            line-height: 1.5;
+            font-size: 0.85rem;
+            font-weight: 300; color: var(--text-muted);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .line { margin-bottom: 5px; white-space: pre-wrap; display: flex; align-items: center; flex-wrap: wrap;}
+        .line strong { color: var(--text-main); margin-right: 6px;}
+
+        [contenteditable="true"] {
+            background-color: transparent; border-bottom: 1px solid #333; color: var(--text-main);
+            font-weight: 800; padding: 0 4px; margin: 0 4px; outline: none; min-width: 30px;
+            display: inline-block; transition: var(--transition);
+        }
+        [contenteditable="true"]:focus { border-bottom: 1px solid var(--text-main); background-color: rgba(255,255,255,0.05); }
+        [contenteditable="true"]:empty::before { content: "····"; color: #444; font-weight: 300; }
+
+        #emptyState {
+            display: flex; flex: 1; align-items: center; justify-content: center; color: var(--text-muted);
+            font-weight: 300; letter-spacing: 0.05em; text-transform: uppercase; font-size: 0.8rem; opacity: 0.3;
+        }
+
+        #dopamine-canvas { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; }
+
+        /* UI CUSTOMIZADA: MODAL (Substitui Prompt) */
+        .custom-modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center; z-index: 10000;
+            opacity: 0; pointer-events: none; transition: var(--transition);
+        }
+        .custom-modal-overlay.active { opacity: 1; pointer-events: auto; }
+        
+        .custom-modal-content {
+            background: var(--bg-element); border: 1px solid var(--border-color);
+            padding: 32px; border-radius: var(--radius-soft); width: 360px;
+            transform: translateY(20px); transition: var(--transition);
+            box-shadow: 0 20px 50px rgba(0,0,0,0.9);
+        }
+        .custom-modal-overlay.active .custom-modal-content { transform: translateY(0); }
+
+        .modal-title { font-weight: 800; font-size: 0.9rem; margin-bottom: 24px; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-main); }
+        
+        .modal-input {
+            width: 100%; background: transparent; border: none; border-bottom: 2px solid #333;
+            color: var(--text-main); font-family: 'Inter', sans-serif; font-size: 1.1rem; font-weight: 800;
+            padding: 8px 0; outline: none; transition: var(--transition); margin-bottom: 32px;
+        }
+        .modal-input:focus { border-bottom-color: var(--text-main); }
+        
+        .modal-actions { display: flex; justify-content: flex-end; gap: 16px; }
+        .btn-modal {
+            background: transparent; border: none; color: var(--text-muted); font-family: 'Inter', sans-serif;
+            font-weight: 800; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; cursor: pointer; transition: var(--transition);
+        }
+        .btn-modal:hover { color: var(--text-main); }
+        .btn-modal-confirm { color: var(--bg-deep); background: var(--text-main); padding: 10px 20px; border-radius: var(--radius-hard); }
+        .btn-modal-confirm:hover { background: #e0e0e0; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255,255,255,0.15); }
+        .btn-modal-confirm:active { transform: translateY(1px); }
+
+    </style>
+</head>
+<body>
+
+<canvas id="dopamine-canvas"></canvas>
+
+<div id="uiPrompt" class="custom-modal-overlay">
+    <div class="custom-modal-content">
+        <div class="modal-title" id="uiPromptTitle">Título do Modal</div>
+        <input type="text" id="uiPromptInput" class="modal-input" autocomplete="off">
+        <div class="modal-actions">
+            <button class="btn-modal" onclick="fecharPrompt(false)">Cancelar</button>
+            <button class="btn-modal btn-modal-confirm" onclick="fecharPrompt(true)">Confirmar</button>
+        </div>
+    </div>
+</div>
+
+<aside class="sidebar">
+    <div class="sidebar-header">
+        <div class="support-text">Cop Rede</div>
+        <h1>GERENCIADOR DE TORPEDOS</h1>
+    </div>
+    <button class="btn-new" onclick="criarTorpedo()">+ Novo Evento</button>
+    <div class="torpedo-list" id="listaTorpedosHTML"></div>
+</aside>
+
+<main class="main-content">
+    <div id="emptyState">Selecione ou inicialize um processo na interface lateral.</div>
+
+    <div id="editorContainer" style="display: none; flex-direction: column; flex: 1;">
+        <div class="top-actions">
+            <div id="activeTimerDisplay">--:--</div>
+            <div>
+                <button class="btn-action btn-copy" onclick="copiarEAtualizar(event)">COPIAR</button>
+                <button id="btnFinish" class="btn-action btn-close" onclick="encerrarTorpedo(event)">EXCLUIR</button>
+            </div>
+        </div>
+
+        <div class="notepad-wrapper">
+            <div class="notepad" id="notepad">
+                <div class="line">COP REDE INFORMA:</div>
+                <div class="line">🟡 ROMPIMENTO DE FIBRA REDE EMPRESARIAL</div>
+                <div class="line">💥 Impacto: REC <span id="f_rec" contenteditable="true" oninput="salvarDados()"></span> RAL <span id="f_ral" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">⚠️Grupo: CLUSTER <span id="f_cluster" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">🌎Cidade: <span id="f_cidade" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">📝REC/RAL (Referência): <span id="f_ref" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">✍🏼Designação (Referência): <span id="f_desig" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">🕒Horário de Abertura: <span id="f_hab" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">⏳Horário de Recebimento no COP: <span id="f_hrec" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">🕒Horário de Acionamento Técnico: <span id="f_haci" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">✍🏼Motivo do Prejuízo: <span id="f_motivo" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">📜Status: <span id="f_status" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">⌛Previsão: <span id="f_prev" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">🔎Causa: <span id="f_causa" contenteditable="true" oninput="salvarDados()"></span></div>
+                <div class="line">🕓Esert4h: <span id="f_e4" contenteditable="true" oninput="salvarDados()"></span>%</div>
+                <div class="line">🕕Esert6h: <span id="f_e6" contenteditable="true" oninput="salvarDados()"></span>%</div>
+                <div class="line">🕕Horário Fechamento: <span id="f_hf" contenteditable="true" oninput="salvarDados()"></span></div>
+            </div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // --- CACHE LOCAL (Persistência de Dados) ---
+    const CACHE_KEY = 'cop_rede_premium_data';
+
+    function salvarCacheGlobal() {
+        const estado = {
+            torpedos: torpedos,
+            contadorTorpedos: contadorTorpedos,
+            idTorpedoAtivo: idTorpedoAtivo
+        };
+        localStorage.setItem(CACHE_KEY, JSON.stringify(estado));
+    }
+
+    function carregarCacheGlobal() {
+        const estadoSalvo = localStorage.getItem(CACHE_KEY);
+        if (estadoSalvo) {
+            try {
+                const estado = JSON.parse(estadoSalvo);
+                torpedos = estado.torpedos || [];
+                contadorTorpedos = estado.contadorTorpedos || 1;
+                
+                renderizarLista();
+                
+                if (estado.idTorpedoAtivo && torpedos.find(t => t.id === estado.idTorpedoAtivo)) {
+                    selecionarTorpedo(estado.idTorpedoAtivo);
+                } else {
+                    idTorpedoAtivo = null;
+                }
+            } catch (e) {
+                console.error("Erro ao carregar o cache:", e);
+            }
+        }
+    }
+    // -------------------------------------------
+
+    // --- SISTEMA DE UI PROMPT ---
+    let resolverPromptAtual = null;
+
+    function abrirPromptCustomizado(mensagem, valorPadrao = "") {
+        return new Promise((resolve) => {
+            const overlay = document.getElementById('uiPrompt');
+            const input = document.getElementById('uiPromptInput');
+            
+            document.getElementById('uiPromptTitle').innerText = mensagem;
+            input.value = valorPadrao;
+            
+            overlay.classList.add('active');
+            input.focus();
+            input.select();
+            
+            resolverPromptAtual = resolve;
+        });
+    }
+
+    function fecharPrompt(confirmado) {
+        const overlay = document.getElementById('uiPrompt');
+        const input = document.getElementById('uiPromptInput');
+        
+        overlay.classList.remove('active');
+        
+        if (resolverPromptAtual) {
+            resolverPromptAtual(confirmado ? input.value : null);
+            resolverPromptAtual = null;
+        }
+    }
+
+    document.getElementById('uiPromptInput').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') fecharPrompt(true);
+        if (e.key === 'Escape') fecharPrompt(false);
+    });
+    // ---------------------------------------------------------
+
+    let torpedos = [];
+    let idTorpedoAtivo = null;
+    let contadorTorpedos = 1;
+    const campos = ['rec', 'ral', 'cluster', 'cidade', 'ref', 'desig', 'hab', 'hrec', 'haci', 'motivo', 'status', 'prev', 'causa', 'e4', 'e6', 'hf'];
+
+    const canvas = document.getElementById('dopamine-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+    window.addEventListener('resize', resizeCanvas); resizeCanvas();
+
+    class Particle {
+        constructor(x, y, multiplier) {
+            this.x = x; this.y = y;
+            const angle = Math.random() * Math.PI * 2;
+            const speed = (Math.random() * 4 + 2) * multiplier;
+            this.vx = Math.cos(angle) * speed; this.vy = Math.sin(angle) * speed;
+            this.life = 1.0; this.decay = Math.random() * 0.02 + 0.015;
+            this.size = Math.random() * 3 + 1;
+        }
+        update() { this.x += this.vx; this.y += this.vy; this.life -= this.decay; }
+        draw(ctx) {
+            ctx.globalAlpha = this.life; ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fill();
+        }
+    }
+
+    function animateParticles() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        particles.forEach((p, index) => {
+            p.update(); p.draw(ctx);
+            if (p.life <= 0) particles.splice(index, 1);
+        });
+        requestAnimationFrame(animateParticles);
+    }
+    animateParticles();
+
+    function triggerDopamine(e, intensity = 1) {
+        const rect = e.target.getBoundingClientRect();
+        const x = rect.left + rect.width / 2; const y = rect.top + rect.height / 2;
+        const count = 25 * intensity;
+        for(let i=0; i<count; i++) particles.push(new Particle(x, y, intensity));
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter' && e.target.hasAttribute('contenteditable')) {
+            e.preventDefault();
+            const editables = Array.from(document.querySelectorAll('[contenteditable="true"]'));
+            const currentIndex = editables.indexOf(e.target);
+            if (currentIndex > -1 && currentIndex < editables.length - 1) {
+                editables[currentIndex + 1].focus();
+            } else { e.target.blur(); }
+        }
+    });
+
+    async function criarTorpedo() {
+        const nomeSugerido = `Evento ${contadorTorpedos.toString().padStart(3, '0')}`;
+        let novoNome = await abrirPromptCustomizado("Dê um nome para o novo evento:", nomeSugerido);
+        
+        if (novoNome === null) return; 
+        if (novoNome.trim() === "") novoNome = nomeSugerido;
+
+        const novoId = Date.now().toString();
+        const novoTorpedo = {
+            id: novoId,
+            nome: novoNome.trim().toUpperCase(),
+            tempo: 3600,
+            atrasado: false,
+            dados: {}
+        };
+        campos.forEach(c => novoTorpedo.dados[c] = "");
+        torpedos.push(novoTorpedo);
+        contadorTorpedos++;
+        selecionarTorpedo(novoId);
+        salvarCacheGlobal(); // Salva estado
+    }
+
+    async function renomearTorpedo(id, event) {
+        event.stopPropagation();
+        const torpedo = torpedos.find(t => t.id === id);
+        if(!torpedo) return;
+        
+        const novoNome = await abrirPromptCustomizado("Nome do Evento:", torpedo.nome);
+        
+        if(novoNome !== null && novoNome.trim() !== "") {
+            torpedo.nome = novoNome.trim().toUpperCase();
+            renderizarLista();
+            salvarCacheGlobal(); // Salva estado
+        }
+    }
+
+    function selecionarTorpedo(id) {
+        idTorpedoAtivo = id;
+        carregarDados();
+        document.getElementById('emptyState').style.display = 'none';
+        document.getElementById('editorContainer').style.display = 'flex';
+        validarEncerramento();
+        renderizarLista();
+        atualizarDisplayTempoAtivo();
+        salvarCacheGlobal(); // Salva qual aba está ativa
+        
+        const firstField = document.getElementById('f_rec');
+        if(firstField && firstField.textContent === "") firstField.focus();
+    }
+
+    function salvarDados() {
+        if (!idTorpedoAtivo) return;
+        const torpedo = torpedos.find(t => t.id === idTorpedoAtivo);
+        campos.forEach(c => {
+            torpedo.dados[c] = document.getElementById('f_' + c).textContent;
+        });
+        validarEncerramento();
+        salvarCacheGlobal(); // Auto-save ao digitar
+    }
+
+    function carregarDados() {
+        if (!idTorpedoAtivo) return;
+        const torpedo = torpedos.find(t => t.id === idTorpedoAtivo);
+        campos.forEach(c => {
+            document.getElementById('f_' + c).textContent = torpedo.dados[c];
+        });
+    }
+
+    function renderizarLista() {
+        const divLista = document.getElementById('listaTorpedosHTML');
+        divLista.innerHTML = ''; 
+
+        torpedos.forEach(t => {
+            const m = Math.floor(Math.abs(t.tempo) / 60).toString().padStart(2, '0');
+            const s = (Math.abs(t.tempo) % 60).toString().padStart(2, '0');
+            
+            const div = document.createElement('div');
+            div.className = `torpedo-item ${t.id === idTorpedoAtivo ? 'active' : ''} ${t.atrasado ? 'atrasado' : ''}`;
+            div.onclick = () => selecionarTorpedo(t.id);
+
+            const statusTempo = t.atrasado ? `PONTO CRÍTICO: ${m}:${s}` : `CONTAGEM: ${m}:${s}`;
+            
+            div.innerHTML = `
+                <div class="torpedo-header-row">
+                    <div class="torpedo-title" title="${t.nome}">${t.nome}</div>
+                    <button class="btn-edit-name" onclick="renomearTorpedo('${t.id}', event)" title="Renomear">✏️</button>
+                </div>
+                <div class="torpedo-timer ${t.atrasado ? 'red' : ''}">${statusTempo}</div>
+            `;
+            divLista.appendChild(div);
+        });
+    }
+
+    function atualizarDisplayTempoAtivo() {
+        if (!idTorpedoAtivo) return;
+        const t = torpedos.find(t => t.id === idTorpedoAtivo);
+        if (!t) return;
+        const m = Math.floor(Math.abs(t.tempo) / 60).toString().padStart(2, '0');
+        const s = (Math.abs(t.tempo) % 60).toString().padStart(2, '0');
+        const display = document.getElementById('activeTimerDisplay');
+
+        if (t.atrasado) {
+            display.style.color = 'var(--text-main)';
+            display.innerText = `[ALERTA DE PRAZO] ${m}:${s}`;
+        } else {
+            display.style.color = 'var(--text-muted)';
+            display.innerText = `ATUALIZAÇÃO EM: ${m}:${s}`;
+        }
+    }
+
+    setInterval(() => {
+        let sofreuAlteracao = false;
+        torpedos.forEach(t => {
+            if (!t.atrasado) {
+                t.tempo--;
+                sofreuAlteracao = true;
+                if (t.tempo <= 0) { t.atrasado = true; t.tempo = 0; }
+            } else { 
+                t.tempo++; 
+                sofreuAlteracao = true;
+            }
+        });
+        if (sofreuAlteracao) {
+            renderizarLista();
+            atualizarDisplayTempoAtivo();
+            salvarCacheGlobal(); // Garante que o timer persista perfeitamente se a página cair
+        }
+    }, 1000);
+
+    async function copiarEAtualizar(event) {
+        if (!idTorpedoAtivo) return;
+        
+        const notepad = document.getElementById('notepad');
+        let text = "";
+        
+        notepad.querySelectorAll('.line').forEach((line, index, arr) => {
+            let lineText = "";
+            line.childNodes.forEach(node => {
+                if (node.nodeType === Node.TEXT_NODE) {
+                    lineText += node.textContent;
+                } else if (node.nodeType === Node.ELEMENT_NODE) {
+                    lineText += node.innerText || node.textContent || "";
+                }
+            });
+            text += lineText + (index < arr.length - 1 ? "\n" : "");
+        });
+
+        try {
+            await navigator.clipboard.writeText(text);
+            const t = torpedos.find(t => t.id === idTorpedoAtivo);
+            t.tempo = 3600; t.atrasado = false;
+            
+            renderizarLista();
+            atualizarDisplayTempoAtivo();
+            salvarCacheGlobal();
+            triggerDopamine(event, 1);
+        } catch (err) {
+            console.error("Erro ao copiar: ", err);
+        }
+    }
+
+    function validarEncerramento() {
+        const e4 = document.getElementById('f_e4').textContent.trim();
+        const e6 = document.getElementById('f_e6').textContent.trim();
+        const hf = document.getElementById('f_hf').textContent.trim();
+        const btn = document.getElementById('btnFinish');
+
+        if (e4 !== "" && e6 !== "" && hf !== "") {
+            btn.classList.add('ready'); btn.disabled = false;
+        } else {
+            btn.classList.remove('ready'); btn.disabled = true;
+        }
+    }
+
+    function encerrarTorpedo(event) {
+        if(document.getElementById('btnFinish').disabled) return;
+        triggerDopamine(event, 2.5);
+
+        setTimeout(() => {
+            torpedos = torpedos.filter(t => t.id !== idTorpedoAtivo);
+            idTorpedoAtivo = null;
+            document.getElementById('editorContainer').style.display = 'none';
+            document.getElementById('emptyState').style.display = 'flex';
+            renderizarLista();
+            salvarCacheGlobal(); // Limpa o torpedo do cache
+        }, 400); 
+    }
+
+    // Inicialização do App
+    window.onload = () => {
+        carregarCacheGlobal();
+    };
+
+</script>
+
+</body>
+</html>
