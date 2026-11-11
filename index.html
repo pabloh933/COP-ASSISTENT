@@ -1,443 +1,142 @@
+Claude
 
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <link rel="shortcut icon" href="favicon.ico">
-
 <title>COP Ferramentas</title>
-
+ 
 <style>
-
-:root {
-    --bg: #0c0e13;
-    --sidebar: #141720;
-    --surface: #1b202b;
-    --border: #292f3c;
-    --red: #e41d2d;
-    --red-hover: #c81726;
-    --text: #f5f5f7;
-    --muted: #9299a8;
-}
-
-* {
-    box-sizing: border-box;
-}
-
-body {
-    margin: 0;
-    height: 100vh;
-    height: 100dvh;
-    display: flex;
-    overflow: hidden;
-    font-family: "Segoe UI", system-ui, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-}
-
+:root{--bg:#0c0e13;--sidebar:#141720;--surface:#1b202b;--border:#292f3c;--red:#e41d2d;--text:#f5f5f7;--muted:#9299a8}
+*{box-sizing:border-box}
+body{margin:0;height:100vh;height:100dvh;display:flex;overflow:hidden;font-family:"Segoe UI",system-ui,sans-serif;background:var(--bg);color:var(--text)}
+ 
 /* SIDEBAR */
-
-.sidebar {
-    width: 260px;
-    min-width: 260px;
-    height: 100%;
-    background: var(--sidebar);
-    border-right: 1px solid var(--border);
-
-    display: flex;
-    flex-direction: column;
-
-    padding: 25px 16px 15px;
-}
-
-/* LOGO / CABEÇALHO */
-
-.logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    padding: 5px 8px 25px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 25px;
-}
-
-.logo-icon {
-    width: 42px;
-    height: 42px;
-    border-radius: 12px;
-    background: var(--red);
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    font-size: 21px;
-    font-weight: 800;
-    box-shadow: 0 4px 15px #e41d2d40;
-}
-
-.logo-text h2 {
-    margin: 0;
-    font-size: 17px;
-    font-weight: 700;
-}
-
-.logo-text span {
-    color: var(--muted);
-    font-size: 11px;
-    letter-spacing: 1px;
-}
-
-/* MENU */
-
-.menu-title {
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 700;
-    letter-spacing: 1.5px;
-    padding: 0 10px;
-    margin-bottom: 12px;
-}
-
-.menu {
-    display: flex;
-    flex-direction: column;
-    gap: 7px;
-}
-
-.menu button {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    background: transparent;
-    color: #b9bfcc;
-
-    border: 1px solid transparent;
-    border-radius: 9px;
-
-    padding: 12px;
-    text-align: left;
-
-    font-size: 13px;
-    font-weight: 600;
-
-    cursor: pointer;
-    transition: all .2s ease;
-}
-
-.menu button:hover {
-    background: var(--surface);
-    color: white;
-}
-
-.menu button.active {
-    background: #e41d2d18;
-    color: white;
-    border-color: #e41d2d45;
-}
-
-.menu button.active .menu-icon {
-    color: var(--red);
-}
-
-.menu-icon {
-    width: 22px;
-    text-align: center;
-    font-size: 17px;
-}
-
+.sidebar{width:260px;min-width:260px;height:100%;background:var(--sidebar);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:25px 16px 15px}
+.logo{display:flex;align-items:center;gap:12px;padding:5px 8px 25px;border-bottom:1px solid var(--border);margin-bottom:25px}
+.logo-icon{width:42px;height:42px;border-radius:12px;background:var(--red);display:flex;align-items:center;justify-content:center;font-size:21px;font-weight:800;box-shadow:0 4px 15px #e41d2d40}
+.logo-text h2{margin:0;font-size:17px;font-weight:700}
+.logo-text span{color:var(--muted);font-size:11px;letter-spacing:1px}
+.menu-title{color:var(--muted);font-size:10px;font-weight:700;letter-spacing:1.5px;padding:0 10px;margin-bottom:12px}
+.menu{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
+.menu button{width:100%;display:flex;align-items:center;gap:12px;background:transparent;color:#b9bfcc;border:1px solid transparent;border-radius:9px;padding:12px;text-align:left;font-size:13px;font-weight:600;cursor:pointer;transition:all .2s ease}
+.menu button:hover{background:var(--surface);color:#fff}
+.menu button.active{background:#e41d2d18;color:#fff;border-color:#e41d2d45}
+.menu button.active .menu-icon{color:var(--red)}
+.menu-icon{width:22px;text-align:center;font-size:17px}
+ 
 /* RODAPÉ */
-
-.sidebar-footer {
-    margin-top: auto;
-    padding: 16px 8px 5px;
-    border-top: 1px solid var(--border);
-}
-
-.creator {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-}
-
-.creator-icon {
-    width: 34px;
-    height: 34px;
-    border-radius: 50%;
-    background: #252b38;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--red);
-    font-size: 15px;
-}
-
-.creator-info {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-}
-
-.creator-info span {
-    font-size: 10px;
-    color: var(--muted);
-}
-
-.creator-info strong {
-    font-size: 12px;
-    color: white;
-}
-
+.sidebar-footer{margin-top:auto;padding:16px 8px 5px;border-top:1px solid var(--border)}
+.creator{display:flex;align-items:center;gap:10px}
+.creator-icon{width:34px;height:34px;border-radius:50%;background:#252b38;display:flex;align-items:center;justify-content:center;color:var(--red);font-size:15px}
+.creator-info{display:flex;flex-direction:column;gap:3px}
+.creator-info span{font-size:10px;color:var(--muted)}
+.creator-info strong{font-size:12px;color:#fff}
+ 
 /* ÁREA PRINCIPAL */
-
-.main {
-    flex: 1;
-    min-width: 0;
-    height: 100%;
-    display: flex;
-    flex-direction: column;
+.main{flex:1;min-width:0;height:100%;display:flex;flex-direction:column}
+.topbar{height:58px;min-height:58px;background:#11141c;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px}
+.topbar-title{font-size:13px;font-weight:600;color:#dce0e8}
+.status{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:11px}
+.status-dot{width:7px;height:7px;background:#35c879;border-radius:50%;box-shadow:0 0 8px #35c87980}
+.content{flex:1;min-height:0;background:var(--bg)}
+iframe{width:100%;height:100%;border:none;display:block}
+ 
+/* CELULAR */
+@media (max-width:650px){
+  body{flex-direction:column}
+  .sidebar{width:100%;min-width:0;height:auto;padding:10px;border-right:none;border-bottom:1px solid var(--border)}
+  .logo{padding:3px 5px 10px;margin-bottom:10px}
+  .logo-icon{width:34px;height:34px}
+  .menu-title,.sidebar-footer{display:none}
+  .menu{flex-direction:row;overflow-x:auto;padding-bottom:3px}
+  .menu button{width:auto;min-width:max-content;padding:9px 11px;font-size:11px}
+  .menu-icon{width:auto}
+  .topbar{height:42px;min-height:42px;padding:0 12px}
 }
-
-.topbar {
-    height: 58px;
-    min-height: 58px;
-    background: #11141c;
-    border-bottom: 1px solid var(--border);
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 0 24px;
-}
-
-.topbar-title {
-    font-size: 13px;
-    font-weight: 600;
-    color: #dce0e8;
-}
-
-.status {
-    display: flex;
-    align-items: center;
-    gap: 7px;
-    color: var(--muted);
-    font-size: 11px;
-}
-
-.status-dot {
-    width: 7px;
-    height: 7px;
-    background: #35c879;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #35c87980;
-}
-
-/* IFRAME */
-
-.content {
-    flex: 1;
-    min-height: 0;
-    background: var(--bg);
-}
-
-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    display: block;
-}
-
-/* RESPONSIVIDADE */
-
-@media (max-width: 650px) {
-
-    body {
-        flex-direction: column;
-    }
-
-    .sidebar {
-        width: 100%;
-        min-width: 0;
-        height: auto;
-        padding: 10px;
-        border-right: none;
-        border-bottom: 1px solid var(--border);
-    }
-
-    .logo {
-        padding: 3px 5px 10px;
-        margin-bottom: 10px;
-    }
-
-    .logo-icon {
-        width: 34px;
-        height: 34px;
-    }
-
-    .menu-title,
-    .sidebar-footer {
-        display: none;
-    }
-
-    .menu {
-        flex-direction: row;
-        overflow-x: auto;
-        padding-bottom: 3px;
-    }
-
-    .menu button {
-        width: auto;
-        min-width: max-content;
-        padding: 9px 11px;
-        font-size: 11px;
-    }
-
-    .menu-icon {
-        width: auto;
-    }
-
-    .topbar {
-        height: 42px;
-        min-height: 42px;
-        padding: 0 12px;
-    }
-
-}
-
 </style>
 </head>
-
+ 
 <body>
-
+ 
 <!-- MENU LATERAL -->
-
 <aside class="sidebar">
-
-    <div class="logo">
-
-        <div class="logo-icon">C</div>
-
-        <div class="logo-text">
-            <h2>COP Ferramentas</h2>
-            <span>CENTRO DE OPERAÇÕES</span>
-        </div>
-
+  <div class="logo">
+    <div class="logo-icon">C</div>
+    <div class="logo-text">
+      <h2>COP Ferramentas</h2>
+      <span>CENTRO DE OPERAÇÕES</span>
     </div>
-
-    <div class="menu-title">FERRAMENTAS</div>
-
-    <nav class="menu">
-
-        <button class="active"
-        onclick="abrir('tools/mascara.html', this, 'Máscara COP')">
-
-            <span class="menu-icon">▤</span>
-            Máscara COP
-
-        </button>
-
-        <button
-        onclick="abrir('tools/CLS e NodeB.html', this, 'CLS + NodeB')">
-
-            <span class="menu-icon">⌘</span>
-            CLS + NodeB
-
-        </button>
-
-        <button
-        onclick="abrir('tools/GRB Duol.html', this, 'GRB Duol')">
-
-            <span class="menu-icon">◈</span>
-            GRB Duol
-
-        </button>
-
-        <button
-        onclick="abrir('tools/Mapas de area', this, 'Mapas de area')">
-
-            <span class="menu-icon">⚙</span>
-            Mapas de area
-
-        </button>
-
-    </nav>
-
-
-<!-- CONTEÚDO PRINCIPAL -->
-
-<main class="main">
-
-    <header class="topbar">
-
-        <div class="topbar-title" id="paginaAtual">
-            Máscara COP
-        </div>
-
-        <div class="status">
-            <span class="status-dot"></span>
-            Sistema disponível
-        </div>
-
-    </header>
-
-    <section class="content">
-
-        <iframe
-            id="frame"
-            src="tools/mascara.html"
-            title="Ferramentas COP">
-        </iframe>
-
-    </section>
-
-</main>
-
-    <!-- CRÉDITOS -->
-
-    <div class="sidebar-footer">
-
-        <div class="creator">
-
-            <div class="creator-icon">✦</div>
-
-            <div class="creator-info">
-                <span>Desenvolvido por</span>
-                <strong>Pablo H Alves</strong>
-
-                <span>Apoio de</span>
-                <strong>Adriano Boas</strong>
-
-            </div>
-
-        </div>
-
+  </div>
+ 
+  <div class="menu-title">FERRAMENTAS</div>
+  <nav class="menu" id="menu"></nav>   <!-- os botões são criados pela lista abaixo -->
+ 
+  <div class="sidebar-footer">
+    <div class="creator">
+      <div class="creator-icon">✦</div>
+      <div class="creator-info">
+        <span>Desenvolvido por</span><strong>Pablo H Alves</strong>
+        <span>Apoio de</span><strong>Adriano Boas</strong>
+      </div>
     </div>
-
+  </div>
 </aside>
-
+ 
+<!-- CONTEÚDO PRINCIPAL -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="paginaAtual"></div>
+    <div class="status"><span class="status-dot"></span>Sistema disponível</div>
+  </header>
+  <section class="content">
+    <iframe id="frame" title="Ferramentas COP"></iframe>
+  </section>
+</main>
+ 
 <script>
-
-function abrir(pagina, botao, titulo) {
-
-    document.getElementById("frame").src = pagina;
-
-    document.getElementById("paginaAtual").textContent = titulo;
-
-    document.querySelectorAll(".menu button").forEach(btn => {
-        btn.classList.remove("active");
-    });
-
-    botao.classList.add("active");
-
+/* ============================================================
+   ✏️  AQUI VOCÊ ADICIONA / ALTERA / REMOVE BOTÕES
+   Cada linha = um botão:
+     nome:  texto que aparece no botão e no título do topo
+     icone: símbolo do botão (qualquer emoji ou caractere)
+     pagina: caminho do arquivo dentro do repositório
+   Para adicionar, copie uma linha, cole embaixo e edite.
+   O primeiro da lista é o que abre ao carregar o site.
+   ============================================================ */
+const FERRAMENTAS = [
+  { nome: "Máscara COP",  icone: "▤", pagina: "tools/mascara.html" },
+  { nome: "CLS + NodeB",  icone: "⌘", pagina: "tools/CLS e NodeB.html" },
+  { nome: "GRB Duol",     icone: "◈", pagina: "tools/GRB Duol.html" },
+  { nome: "Mapas de área", icone: "⚙", pagina: "tools/mapas-de-area.html" },
+];
+/* ============================================================ */
+ 
+const menu = document.getElementById("menu");
+ 
+function abrir(ferramenta, botao) {
+  document.getElementById("frame").src = encodeURI(ferramenta.pagina);
+  document.getElementById("paginaAtual").textContent = ferramenta.nome;
+  menu.querySelectorAll("button").forEach(b => b.classList.remove("active"));
+  botao.classList.add("active");
 }
-
+ 
+FERRAMENTAS.forEach(f => {
+  const b = document.createElement("button");
+  const icone = document.createElement("span");
+  icone.className = "menu-icon";
+  icone.textContent = f.icone;
+  b.append(icone, f.nome);
+  b.onclick = () => abrir(f, b);
+  menu.appendChild(b);
+});
+ 
+if (menu.firstChild) menu.firstChild.click();
 </script>
-
+ 
 </body>
 </html>
