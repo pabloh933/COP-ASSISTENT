@@ -372,7 +372,7 @@ $("linkbar").addEventListener("click", e => {
    ========================================================= */
 let drawerLado = "A", drawerLinks = [];
 
-function abrirDrawer(lado) { drawerLado = lado || drawerLado; $("filtro").value = ""; // LIMPA O CAMPO $("drawer").classList.add("open"); $("verConexoes").setAttribute("aria-expanded", "true"); atualizarDrawer();}
+function abrirDrawer(lado) {  drawerLado = lado || drawerLado;  $("filtro").value = "";  $("drawer").classList.add("open");  $("verConexoes").setAttribute("aria-expanded", "true");  atualizarDrawer();}
 
 function fecharDrawer() { $("drawer").classList.remove("open"); $("verConexoes").setAttribute("aria-expanded", "false"); }
 
