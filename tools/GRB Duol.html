@@ -308,21 +308,15 @@ const eq1 = $("eq1"), eq2 = $("eq2");
 let estado = { a: "", b: "", diretos: [], sel: null, linkKey: "" };
 let aberto = { a: "", b: "", portaA: "", portaB: "", obs: "" };
 
-/* Limpa o lado oposto quando começar uma nova consulta */
+/* Apenas reanalisa sem apagar o outro campo */
 eq1.addEventListener("input", () => {
-  if (eq2.value) {
-    eq2.value = "";
-    estado.linkKey = "";
-    analisar();
-  }
+  estado.linkKey = "";
+  analisar();
 });
 
 eq2.addEventListener("input", () => {
-  if (eq1.value) {
-    eq1.value = "";
-    estado.linkKey = "";
-    analisar();
-  }
+  estado.linkKey = "";
+  analisar();
 });
 
 function analisar(op = {}) {
@@ -377,7 +371,9 @@ $("linkbar").addEventListener("click", e => {
    GAVETA DE CONEXÕES (clicar numa linha preenche e abre tudo)
    ========================================================= */
 let drawerLado = "A", drawerLinks = [];
-function abrirDrawer(lado) { drawerLado = lado || drawerLado; $("drawer").classList.add("open"); $("verConexoes").setAttribute("aria-expanded", "true"); atualizarDrawer(); }
+
+function abrirDrawer(lado) { drawerLado = lado || drawerLado; $("filtro").value = ""; // LIMPA O CAMPO $("drawer").classList.add("open"); $("verConexoes").setAttribute("aria-expanded", "true"); atualizarDrawer();}
+
 function fecharDrawer() { $("drawer").classList.remove("open"); $("verConexoes").setAttribute("aria-expanded", "false"); }
 
 function atualizarDrawer() {
@@ -397,12 +393,28 @@ function atualizarDrawer() {
       <span class="obs">${tagsObs(l.obs)}</span></button>`).join("");
 }
 $("dl").addEventListener("click", e => {
-  const r = e.target.closest(".lrow"); if (!r) return;
-  const l = drawerLinks[+r.dataset.i]; if (!l) return;
-  if (drawerLado === "A") { eq2.value = l.peer; estado.linkKey = l.porta + KS + l.portaPeer; }
-  else { eq1.value = l.peer; estado.linkKey = l.portaPeer + KS + l.porta; }
-  analisar(); fecharDrawer(); abrir();
+  const r = e.target.closest(".lrow");
+  if (!r) return;
+
+  const l = drawerLinks[+r.dataset.i];
+  if (!l) return;
+
+  if (drawerLado === "A") {
+    eq2.value = l.peer;
+    estado.linkKey = l.porta + KS + l.portaPeer;
+  } else {
+    eq1.value = l.peer;
+    estado.linkKey = l.portaPeer + KS + l.porta;
+  }
+
+  // limpa filtro
+  $("filtro").value = "";
+
+  analisar();
+  fecharDrawer();
+  abrir();
 });
+
 $("tabA").onclick = () => { drawerLado = "A"; atualizarDrawer(); };
 $("tabB").onclick = () => { drawerLado = "B"; atualizarDrawer(); };
 $("filtro").addEventListener("input", atualizarDrawer);
