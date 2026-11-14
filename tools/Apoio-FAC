@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Apoio FCA</title>
+
+<style>
+
+/* =====================================================================
+   TEMA COP
+   ===================================================================== */
+
+:root{
+--primary:#0A2545;
+--primary-2:#0d3163;
+
+--accent:#F97326;
+--accent-d:#ea580c;
+
+--accent-soft:#ffedd5;
+--accent-bg:#fff4ec;
+
+--blue:#2563eb;
+--blue-soft:#dbeafe;
+
+--bg:#f8fafc;
+--card:#ffffff;
+--line:#e2e8f0;
+
+--ink:#0f172a;
+--txt:#334155;
+--mut:#64748b;
+
+--ok:#15803d;
+--warn:#b45309;
+--danger:#dc2626;
+
+--radius:1rem;
+--radius-sm:.75rem;
+
+--font:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+
+--shadow-card:
+0 25px 50px -12px rgba(0,0,0,.25);
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+body{
+font-family:var(--font);
+background:var(--bg);
+color:var(--txt);
+}
+
+.cop-hero{
+position:relative;
+color:white;
+border-bottom:4px solid var(--accent);
+
+background:
+radial-gradient(
+900px 400px at 85% -10%,
+rgba(249,115,38,.25),
+transparent 60%
+),
+linear-gradient(
+160deg,
+var(--primary) 0%,
+var(--primary-2) 100%
+);
+}
+
+.cop-hero::before{
+content:"";
+position:absolute;
+inset:0;
+background-image:
+radial-gradient(
+rgba(255,255,255,.08) 1px,
+transparent 1px
+);
+background-size:22px 22px;
+}
+
+.cop-brand{
+display:flex;
+align-items:center;
+gap:12px;
+font-size:28px;
+font-weight:800;
+position:relative;
+z-index:2;
+}
+
+.cop-brand i{
+width:52px;
+height:52px;
+display:flex;
+align-items:center;
+justify-content:center;
+background:var(--accent);
+border-radius:12px;
+font-style:normal;
+font-size:24px;
+}
+
+.cop-brand b{
+color:var(--accent);
+}
+
+.hero-content{
+position:relative;
+z-index:2;
+padding:25px;
+max-width:1100px;
+margin:auto;
+}
+
+.hero-sub{
+margin-top:8px;
+color:#dbeafe;
+}
+
+.main{
+max-width:1100px;
+margin:auto;
+padding:20px;
+}
+
+.cop-card{
+background:white;
+border-radius:18px;
+box-shadow:var(--shadow-card);
+overflow:hidden;
+}
+
+.cop-card::before{
+content:"";
+display:block;
+height:6px;
+background:
+linear-gradient(
+90deg,
+var(--accent),
+#fdba74
+);
+}
+
+.form-card{
+padding:25px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:15px;
+}
+
+.full{
+grid-column:1/-1;
+}
+
+label{
+font-size:14px;
+font-weight:700;
+margin-bottom:5px;
+display:block;
+color:var(--ink);
+}
+
+.cop-input{
+width:100%;
+padding:12px;
+border:1px solid #dbe1e7;
+border-radius:12px;
+font-size:15px;
+outline:none;
+}
+
+.cop-input:focus{
+border-color:var(--accent);
+box-shadow:
+0 0 0 4px rgba(249,115,38,.18);
+}
+
+textarea.cop-input{
+min-height:90px;
+resize:vertical;
+}
+
+.cop-btn{
+width:100%;
+height:54px;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-size:16px;
+font-weight:700;
+margin-top:18px;
+transition:.2s;
+}
+
+.cop-btn.primary{
+background:var(--accent);
+color:white;
+}
+
+.cop-btn.primary:hover{
+background:var(--accent-d);
+}
+
+.preview{
+margin-top:20px;
+padding:20px;
+}
+
+.tag{
+display:inline-block;
+background:var(--accent-soft);
+color:#c2410c;
+padding:6px 12px;
+border-radius:8px;
+font-size:13px;
+font-weight:700;
+}
+
+#resultado{
+margin-top:15px;
+line-height:1.8;
+white-space:pre-line;
+font-size:15px;
+}
+
+.cop-toast{
+position:fixed;
+bottom:25px;
+left:50%;
+transform:translateX(-50%);
+background:#0f172a;
+color:white;
+padding:12px 18px;
+border-radius:10px;
+font-weight:600;
+z-index:9999;
+box-shadow:
+0 15px 25px rgba(0,0,0,.25);
+}
+
+.footer{
+margin-top:30px;
+padding:20px;
+text-align:center;
+background:var(--primary);
+color:#cbd5e1;
+}
+
+@media(max-width:768px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.cop-brand{
+font-size:22px;
+}
+
+}
+
+</style>
+</head>
+
+<body>
+
+<header class="cop-hero">
+
+<div class="hero-content">
+
+<div class="cop-brand">
+<i>📋</i>
+Apoio <b>FCA</b>
+</div>
+
+<div class="hero-sub">
+Gerador rápido de FCA para técnicos em campo
+</div>
+
+<div class="hero-sub">
+Criado por: Pablo H Alves
+</div>
+
+</div>
+
+</header>
+
+<div class="main">
+
+<div class="cop-card">
+
+<div class="form-card">
+
+<div class="grid">
+
+<div>
+<label>🚨 OCORRÊNCIA</label>
+<input id="ocorrencia"
+class="cop-input"
+placeholder="RAL-713523/2026">
+</div>
+
+<div>
+<label>📍 DESIGNAÇÃO</label>
+<input id="designacao"
+class="cop-input"
+placeholder="RBT TANGBR B40W 001">
+</div>
+
+<div class="full">
+<label>📝 FATO</label>
+<textarea id="fato"
+class="cop-input"></textarea>
+</div>
+
+<div class="full">
+<label>🔎 CAUSA</label>
+<textarea id="causa"
+class="cop-input"></textarea>
+</div>
+
+<div class="full">
+<label>🏠 ENDEREÇO</label>
+<input id="endereco"
+class="cop-input"
+placeholder="79M8+QRP Rio Bonito, RJ">
+</div>
+
+<div class="full">
+<label>🛠️ AÇÃO</label>
+<textarea id="acao"
+class="cop-input"></textarea>
+</div>
+
+<div class="full">
+<label>📌 ATUALIZAÇÕES</label>
+<textarea id="atualizacoes"
+class="cop-input"></textarea>
+</div>
+
+<div>
+<label>📊 STATUS</label>
+
+<select id="status"
+class="cop-input">
+
+<option>Finalizado</option>
+<option>Em andamento</option>
+<option>Aguardando acesso</option>
+<option>Aguardando material</option>
+<option>Pendente</option>
+
+</select>
+</div>
+
+<div>
+<label>📦 CAIXA ADEQUADA</label>
+
+<select id="caixa"
+class="cop-input">
+
+<option>Sim</option>
+<option>Não</option>
+<option>Não se aplica</option>
+
+</select>
+</div>
+
+</div>
+
+<button
+class="cop-btn primary"
+onclick="copiarFCA()">
+📋 Copiar FCA
+</button>
+
+</div>
+
+</div>
+
+<div class="cop-card preview">
+
+<span class="tag">
+Nota do Técnico
+</span>
+
+<div id="resultado"></div>
+
+</div>
+
+</div>
+
+<div class="footer">
+Apoio FCA • Desenvolvido para suporte operacional de campo
+</div>
+
+<script>
+
+function gerarTexto(){
+
+const texto =
+`🚨 OCORRÊNCIA: ${ocorrencia.value}
+📍 DESIGNAÇÃO: ${designacao.value}
+📝 FATO: ${fato.value}
+🔎 CAUSA: ${causa.value}
+🏠 ENDEREÇO: ${endereco.value}
+🛠️ AÇÃO: ${acao.value}
+📌 ATUALIZAÇÕES: ${atualizacoes.value}
+📊 STATUS: ${status.value}
+📦 CAIXA ADEQUADA: ${caixa.value}.`;
+
+resultado.textContent = texto;
+
+return texto;
+}
+
+document
+.querySelectorAll("input, textarea, select")
+.forEach(c=>{
+
+c.addEventListener("input",gerarTexto);
+c.addEventListener("change",gerarTexto);
+
+});
+
+function toast(msg){
+
+const t=document.createElement("div");
+
+t.className="cop-toast";
+t.textContent=msg;
+
+document.body.appendChild(t);
+
+setTimeout(()=>{
+t.remove();
+},2500);
+
+}
+
+async function copiarFCA(){
+
+const texto = gerarTexto();
+
+await navigator.clipboard.writeText(texto);
+
+toast("✅ FCA copiado com sucesso!");
+
+}
+
+gerarTexto();
+
+</script>
+
+</body>
+</html>
