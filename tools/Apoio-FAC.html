@@ -3,466 +3,550 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+<meta name="theme-color" content="#0A2545">
 <title>Apoio FCA</title>
 
 <style>
-
-/* =====================================================================
-   TEMA COP
-   ===================================================================== */
-
 :root{
---primary:#0A2545;
---primary-2:#0d3163;
-
---accent:#F97326;
---accent-d:#ea580c;
-
---accent-soft:#ffedd5;
---accent-bg:#fff4ec;
-
---blue:#2563eb;
---blue-soft:#dbeafe;
-
---bg:#f8fafc;
---card:#ffffff;
---line:#e2e8f0;
-
---ink:#0f172a;
---txt:#334155;
---mut:#64748b;
-
---ok:#15803d;
---warn:#b45309;
---danger:#dc2626;
-
---radius:1rem;
---radius-sm:.75rem;
-
---font:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-
---shadow-card:
-0 25px 50px -12px rgba(0,0,0,.25);
+  --primary:#0A2545;
+  --primary-2:#0d3163;
+  --accent:#F97326;
+  --accent-d:#ea580c;
+  --accent-soft:#ffedd5;
+  --bg:#f8fafc;
+  --card:#ffffff;
+  --line:#e2e8f0;
+  --ink:#0f172a;
+  --txt:#334155;
+  --mut:#64748b;
+  --ok:#15803d;
+  --warn:#b45309;
+  --danger:#dc2626;
+  --font:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --shadow-card:0 10px 30px -10px rgba(10,37,69,.25);
 }
 
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-}
+*{margin:0;padding:0;box-sizing:border-box}
 
 body{
-font-family:var(--font);
-background:var(--bg);
-color:var(--txt);
+  font-family:var(--font);
+  background:var(--bg);
+  color:var(--txt);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
 }
 
+/* ---------- Cabeçalho ---------- */
 .cop-hero{
-position:relative;
-color:white;
-border-bottom:4px solid var(--accent);
-
-background:
-radial-gradient(
-900px 400px at 85% -10%,
-rgba(249,115,38,.25),
-transparent 60%
-),
-linear-gradient(
-160deg,
-var(--primary) 0%,
-var(--primary-2) 100%
-);
+  position:relative;
+  color:#fff;
+  border-bottom:4px solid var(--accent);
+  background:
+    radial-gradient(900px 400px at 85% -10%,rgba(249,115,38,.25),transparent 60%),
+    linear-gradient(160deg,var(--primary) 0%,var(--primary-2) 100%);
 }
-
 .cop-hero::before{
-content:"";
-position:absolute;
-inset:0;
-background-image:
-radial-gradient(
-rgba(255,255,255,.08) 1px,
-transparent 1px
-);
-background-size:22px 22px;
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image:radial-gradient(rgba(255,255,255,.08) 1px,transparent 1px);
+  background-size:22px 22px;
+  pointer-events:none;
 }
-
-.cop-brand{
-display:flex;
-align-items:center;
-gap:12px;
-font-size:28px;
-font-weight:800;
-position:relative;
-z-index:2;
-}
-
-.cop-brand i{
-width:52px;
-height:52px;
-display:flex;
-align-items:center;
-justify-content:center;
-background:var(--accent);
-border-radius:12px;
-font-style:normal;
-font-size:24px;
-}
-
-.cop-brand b{
-color:var(--accent);
-}
-
 .hero-content{
-position:relative;
-z-index:2;
-padding:25px;
-max-width:1100px;
-margin:auto;
+  position:relative;
+  padding:22px 20px;
+  max-width:1100px;
+  margin:auto;
 }
-
-.hero-sub{
-margin-top:8px;
-color:#dbeafe;
+.cop-brand{
+  display:flex;
+  align-items:center;
+  gap:12px;
+  font-size:28px;
+  font-weight:800;
 }
+.cop-brand i{
+  width:52px;height:52px;
+  display:flex;align-items:center;justify-content:center;
+  background:var(--accent);
+  border-radius:12px;
+  font-style:normal;
+  font-size:24px;
+}
+.cop-brand b{color:var(--accent)}
+.hero-sub{margin-top:8px;color:#dbeafe;font-size:15px}
+.hero-sub small{color:#93a9c9}
 
+/* ---------- Layout ---------- */
 .main{
-max-width:1100px;
-margin:auto;
-padding:20px;
+  width:100%;
+  max-width:1100px;
+  margin:auto;
+  padding:20px;
+  flex:1;
+}
+.layout{
+  display:grid;
+  grid-template-columns:1.2fr 1fr;
+  gap:20px;
+  align-items:start;
 }
 
 .cop-card{
-background:white;
-border-radius:18px;
-box-shadow:var(--shadow-card);
-overflow:hidden;
+  background:var(--card);
+  border-radius:18px;
+  box-shadow:var(--shadow-card);
+  overflow:hidden;
 }
-
 .cop-card::before{
-content:"";
-display:block;
-height:6px;
-background:
-linear-gradient(
-90deg,
-var(--accent),
-#fdba74
-);
+  content:"";
+  display:block;
+  height:6px;
+  background:linear-gradient(90deg,var(--accent),#fdba74);
 }
+.card-body{padding:22px}
 
-.form-card{
-padding:25px;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:15px;
-}
-
-.full{
-grid-column:1/-1;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}
+.full{grid-column:1/-1}
 
 label{
-font-size:14px;
-font-weight:700;
-margin-bottom:5px;
-display:block;
-color:var(--ink);
+  font-size:14px;
+  font-weight:700;
+  margin-bottom:5px;
+  display:block;
+  color:var(--ink);
 }
+.req{color:var(--danger)}
 
 .cop-input{
-width:100%;
-padding:12px;
-border:1px solid #dbe1e7;
-border-radius:12px;
-font-size:15px;
-outline:none;
+  width:100%;
+  padding:12px;
+  border:1px solid #cbd5e1;
+  border-radius:12px;
+  font:inherit;
+  font-size:16px; /* evita zoom automático no iPhone */
+  color:var(--ink);
+  background:#fff;
+  outline:none;
+  transition:border-color .15s,box-shadow .15s;
 }
-
 .cop-input:focus{
-border-color:var(--accent);
-box-shadow:
-0 0 0 4px rgba(249,115,38,.18);
+  border-color:var(--accent);
+  box-shadow:0 0 0 4px rgba(249,115,38,.18);
 }
-
-textarea.cop-input{
-min-height:90px;
-resize:vertical;
+.cop-input.invalid{
+  border-color:var(--danger);
+  box-shadow:0 0 0 4px rgba(220,38,38,.15);
 }
+textarea.cop-input{min-height:84px;resize:vertical}
 
+.hint{font-size:12px;color:var(--mut);margin-top:4px}
+
+/* ---------- Botões ---------- */
+.actions{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  margin-top:20px;
+}
 .cop-btn{
-width:100%;
-height:54px;
-border:none;
-border-radius:12px;
-cursor:pointer;
-font-size:16px;
-font-weight:700;
-margin-top:18px;
-transition:.2s;
+  height:52px;
+  border:none;
+  border-radius:12px;
+  cursor:pointer;
+  font:inherit;
+  font-size:15px;
+  font-weight:700;
+  transition:background .15s,transform .05s;
 }
+.cop-btn:active{transform:scale(.98)}
+.cop-btn:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.cop-btn.primary{background:var(--accent);color:#fff;grid-column:1/-1;font-size:16px}
+.cop-btn.primary:hover{background:var(--accent-d)}
+.cop-btn.whats{background:#16a34a;color:#fff}
+.cop-btn.whats:hover{background:#15803d}
+.cop-btn.ghost{background:#fff;color:var(--txt);border:1px solid #cbd5e1}
+.cop-btn.ghost:hover{background:#f1f5f9}
 
-.cop-btn.primary{
-background:var(--accent);
-color:white;
+/* ---------- Pré-visualização ---------- */
+.preview{position:sticky;top:16px}
+.preview-head{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  flex-wrap:wrap;
 }
-
-.cop-btn.primary:hover{
-background:var(--accent-d);
-}
-
-.preview{
-margin-top:20px;
-padding:20px;
-}
-
 .tag{
-display:inline-block;
-background:var(--accent-soft);
-color:#c2410c;
-padding:6px 12px;
-border-radius:8px;
-font-size:13px;
-font-weight:700;
+  display:inline-block;
+  background:var(--accent-soft);
+  color:#c2410c;
+  padding:6px 12px;
+  border-radius:8px;
+  font-size:13px;
+  font-weight:700;
 }
+.status-pill{
+  padding:6px 12px;
+  border-radius:999px;
+  font-size:13px;
+  font-weight:700;
+  background:#e2e8f0;
+  color:var(--txt);
+}
+.status-pill.ok{background:#dcfce7;color:var(--ok)}
+.status-pill.warn{background:#fef3c7;color:var(--warn)}
+.status-pill.danger{background:#fee2e2;color:var(--danger)}
 
 #resultado{
-margin-top:15px;
-line-height:1.8;
-white-space:pre-line;
-font-size:15px;
+  margin-top:15px;
+  line-height:1.7;
+  white-space:pre-wrap;
+  word-break:break-word;
+  font-size:15px;
+  color:var(--ink);
 }
+.counter{margin-top:12px;font-size:12px;color:var(--mut);text-align:right}
 
+/* ---------- Toast ---------- */
 .cop-toast{
-position:fixed;
-bottom:25px;
-left:50%;
-transform:translateX(-50%);
-background:#0f172a;
-color:white;
-padding:12px 18px;
-border-radius:10px;
-font-weight:600;
-z-index:9999;
-box-shadow:
-0 15px 25px rgba(0,0,0,.25);
+  position:fixed;
+  bottom:25px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--ink);
+  color:#fff;
+  padding:12px 18px;
+  border-radius:10px;
+  font-weight:600;
+  z-index:9999;
+  box-shadow:0 15px 25px rgba(0,0,0,.25);
+  max-width:90vw;
+  text-align:center;
 }
+.cop-toast.error{background:var(--danger)}
 
 .footer{
-margin-top:30px;
-padding:20px;
-text-align:center;
-background:var(--primary);
-color:#cbd5e1;
+  margin-top:30px;
+  padding:20px;
+  text-align:center;
+  background:var(--primary);
+  color:#cbd5e1;
+  font-size:14px;
 }
 
-@media(max-width:768px){
-
-.grid{
-grid-template-columns:1fr;
+@media(max-width:860px){
+  .layout{grid-template-columns:1fr}
+  .preview{position:static}
 }
-
-.cop-brand{
-font-size:22px;
+@media(max-width:560px){
+  .grid,.actions{grid-template-columns:1fr}
+  .cop-btn.primary{grid-column:auto}
+  .cop-brand{font-size:22px}
+  .main{padding:14px}
 }
-
+@media(prefers-reduced-motion:reduce){
+  *{transition:none!important}
 }
-
 </style>
 </head>
 
 <body>
 
 <header class="cop-hero">
-
-<div class="hero-content">
-
-<div class="cop-brand">
-<i>📋</i>
-Apoio <b>FCA</b>
-</div>
-
-<div class="hero-sub">
-Gerador rápido de FCA para técnicos em campo
-</div>
-
-<div class="hero-sub">
-Criado por: Pablo H Alves
-</div>
-
-</div>
-
+  <div class="hero-content">
+    <div class="cop-brand"><i aria-hidden="true">📋</i><span>Apoio <b>FCA</b></span></div>
+    <div class="hero-sub">Gerador rápido de FCA para técnicos em campo</div>
+    <div class="hero-sub"><small>Criado por: Pablo H Alves</small></div>
+  </div>
 </header>
 
-<div class="main">
+<main class="main">
+  <div class="layout">
 
-<div class="cop-card">
+    <!-- FORMULÁRIO -->
+    <section class="cop-card" aria-label="Formulário do FCA">
+      <div class="card-body">
+        <div class="grid">
 
-<div class="form-card">
+          <div>
+            <label for="ocorrencia">🚨 OCORRÊNCIA <span class="req">*</span></label>
+            <input id="ocorrencia" class="cop-input" placeholder="RAL-713523/2026" autocomplete="off" autocapitalize="characters">
+          </div>
 
-<div class="grid">
+          <div>
+            <label for="designacao">📍 DESIGNAÇÃO <span class="req">*</span></label>
+            <input id="designacao" class="cop-input" placeholder="RBT TANGBR B40W 001" autocomplete="off" autocapitalize="characters">
+          </div>
 
-<div>
-<label>🚨 OCORRÊNCIA</label>
-<input id="ocorrencia"
-class="cop-input"
-placeholder="RAL-713523/2026">
-</div>
+          <div class="full">
+            <label for="fato">📝 FATO</label>
+            <textarea id="fato" class="cop-input"></textarea>
+          </div>
 
-<div>
-<label>📍 DESIGNAÇÃO</label>
-<input id="designacao"
-class="cop-input"
-placeholder="RBT TANGBR B40W 001">
-</div>
+          <div class="full">
+            <label for="causa">🔎 CAUSA</label>
+            <textarea id="causa" class="cop-input"></textarea>
+          </div>
 
-<div class="full">
-<label>📝 FATO</label>
-<textarea id="fato"
-class="cop-input"></textarea>
-</div>
+          <div class="full">
+            <label for="endereco">🏠 ENDEREÇO</label>
+            <input id="endereco" class="cop-input" placeholder="79M8+QRP Rio Bonito, RJ" autocomplete="off">
+            <button type="button" class="cop-btn ghost" id="btnGps" style="height:40px;margin-top:8px;width:100%;font-size:14px">
+              📡 Usar minha localização
+            </button>
+          </div>
 
-<div class="full">
-<label>🔎 CAUSA</label>
-<textarea id="causa"
-class="cop-input"></textarea>
-</div>
+          <div class="full">
+            <label for="acao">🛠️ AÇÃO</label>
+            <textarea id="acao" class="cop-input"></textarea>
+          </div>
 
-<div class="full">
-<label>🏠 ENDEREÇO</label>
-<input id="endereco"
-class="cop-input"
-placeholder="79M8+QRP Rio Bonito, RJ">
-</div>
+          <div class="full">
+            <label for="atualizacoes">📌 ATUALIZAÇÕES</label>
+            <textarea id="atualizacoes" class="cop-input"></textarea>
+          </div>
 
-<div class="full">
-<label>🛠️ AÇÃO</label>
-<textarea id="acao"
-class="cop-input"></textarea>
-</div>
+          <div>
+            <label for="status">📊 STATUS</label>
+            <select id="status" class="cop-input">
+              <option>Finalizado</option>
+              <option>Em andamento</option>
+              <option>Aguardando acesso</option>
+              <option>Aguardando material</option>
+              <option>Pendente</option>
+            </select>
+          </div>
 
-<div class="full">
-<label>📌 ATUALIZAÇÕES</label>
-<textarea id="atualizacoes"
-class="cop-input"></textarea>
-</div>
+          <div>
+            <label for="caixa">📦 CAIXA ADEQUADA</label>
+            <select id="caixa" class="cop-input">
+              <option>Sim</option>
+              <option>Não</option>
+              <option>Não se aplica</option>
+            </select>
+          </div>
 
-<div>
-<label>📊 STATUS</label>
+        </div>
 
-<select id="status"
-class="cop-input">
+        <div class="actions">
+          <button type="button" class="cop-btn primary" id="btnCopiar">📋 Copiar FCA</button>
+          <button type="button" class="cop-btn whats" id="btnWhats">💬 Enviar no WhatsApp</button>
+          <button type="button" class="cop-btn ghost" id="btnLimpar">🗑️ Novo FCA</button>
+        </div>
+        <p class="hint">Os campos são salvos automaticamente neste aparelho.</p>
+      </div>
+    </section>
 
-<option>Finalizado</option>
-<option>Em andamento</option>
-<option>Aguardando acesso</option>
-<option>Aguardando material</option>
-<option>Pendente</option>
+    <!-- PRÉ-VISUALIZAÇÃO -->
+    <section class="cop-card preview" aria-label="Pré-visualização">
+      <div class="card-body">
+        <div class="preview-head">
+          <span class="tag">Nota do Técnico</span>
+          <span class="status-pill" id="statusPill"></span>
+        </div>
+        <div id="resultado" aria-live="polite"></div>
+        <div class="counter" id="contador"></div>
+      </div>
+    </section>
 
-</select>
-</div>
+  </div>
+</main>
 
-<div>
-<label>📦 CAIXA ADEQUADA</label>
-
-<select id="caixa"
-class="cop-input">
-
-<option>Sim</option>
-<option>Não</option>
-<option>Não se aplica</option>
-
-</select>
-</div>
-
-</div>
-
-<button
-class="cop-btn primary"
-onclick="copiarFCA()">
-📋 Copiar FCA
-</button>
-
-</div>
-
-</div>
-
-<div class="cop-card preview">
-
-<span class="tag">
-Nota do Técnico
-</span>
-
-<div id="resultado"></div>
-
-</div>
-
-</div>
-
-<div class="footer">
-Apoio FCA • Desenvolvido para suporte operacional de campo
-</div>
+<footer class="footer">
+  Apoio FCA • Desenvolvido para suporte operacional de campo
+</footer>
 
 <script>
+(function () {
+  "use strict";
 
-function gerarTexto(){
+  const STORAGE_KEY = "apoio-fca:rascunho";
 
-const texto =
-`🚨 OCORRÊNCIA: ${ocorrencia.value}
-📍 DESIGNAÇÃO: ${designacao.value}
-📝 FATO: ${fato.value}
-🔎 CAUSA: ${causa.value}
-🏠 ENDEREÇO: ${endereco.value}
-🛠️ AÇÃO: ${acao.value}
-📌 ATUALIZAÇÕES: ${atualizacoes.value}
-📊 STATUS: ${status.value}
-📦 CAIXA ADEQUADA: ${caixa.value}.`;
+  const $ = (id) => document.getElementById(id);
 
-resultado.textContent = texto;
+  // Campos na ordem em que aparecem na nota
+  const CAMPOS = [
+    { id: "ocorrencia",   rotulo: "🚨 OCORRÊNCIA" },
+    { id: "designacao",   rotulo: "📍 DESIGNAÇÃO" },
+    { id: "fato",         rotulo: "📝 FATO" },
+    { id: "causa",        rotulo: "🔎 CAUSA" },
+    { id: "endereco",     rotulo: "🏠 ENDEREÇO" },
+    { id: "acao",         rotulo: "🛠️ AÇÃO" },
+    { id: "atualizacoes", rotulo: "📌 ATUALIZAÇÕES" },
+    { id: "status",       rotulo: "📊 STATUS" },
+    { id: "caixa",        rotulo: "📦 CAIXA ADEQUADA" }
+  ];
 
-return texto;
-}
+  const OBRIGATORIOS = ["ocorrencia", "designacao"];
 
-document
-.querySelectorAll("input, textarea, select")
-.forEach(c=>{
+  /* ---------- Storage seguro (pode falhar em modo privado) ---------- */
+  function salvarRascunho() {
+    try {
+      const dados = {};
+      CAMPOS.forEach(c => { dados[c.id] = $(c.id).value; });
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(dados));
+    } catch (e) { /* sem armazenamento: segue sem salvar */ }
+  }
 
-c.addEventListener("input",gerarTexto);
-c.addEventListener("change",gerarTexto);
+  function carregarRascunho() {
+    try {
+      const dados = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+      if (!dados) return;
+      CAMPOS.forEach(c => {
+        if (typeof dados[c.id] === "string") $(c.id).value = dados[c.id];
+      });
+    } catch (e) { /* ignora rascunho corrompido */ }
+  }
 
-});
+  /* ---------- Geração do texto ---------- */
+  function limpar(valor) {
+    return valor.trim().replace(/[ \t]+\n/g, "\n");
+  }
 
-function toast(msg){
+  function gerarTexto() {
+    const texto = CAMPOS
+      .map(c => `${c.rotulo}: ${limpar($(c.id).value)}`)
+      .join("\n");
 
-const t=document.createElement("div");
+    $("resultado").textContent = texto;
+    $("contador").textContent = texto.length + " caracteres";
+    atualizarStatus();
+    return texto;
+  }
 
-t.className="cop-toast";
-t.textContent=msg;
+  function atualizarStatus() {
+    const pill = $("statusPill");
+    const valor = $("status").value;
+    pill.textContent = valor;
+    pill.className = "status-pill " + (
+      valor === "Finalizado" ? "ok" :
+      valor === "Pendente" ? "danger" : "warn"
+    );
+  }
 
-document.body.appendChild(t);
+  /* ---------- Validação ---------- */
+  function validar() {
+    let primeiroInvalido = null;
+    OBRIGATORIOS.forEach(id => {
+      const campo = $(id);
+      const vazio = !campo.value.trim();
+      campo.classList.toggle("invalid", vazio);
+      if (vazio && !primeiroInvalido) primeiroInvalido = campo;
+    });
+    if (primeiroInvalido) {
+      primeiroInvalido.focus();
+      toast("Preencha Ocorrência e Designação.", true);
+      return false;
+    }
+    return true;
+  }
 
-setTimeout(()=>{
-t.remove();
-},2500);
+  /* ---------- Toast ---------- */
+  function toast(msg, erro) {
+    const antigo = document.querySelector(".cop-toast");
+    if (antigo) antigo.remove();
 
-}
+    const t = document.createElement("div");
+    t.className = "cop-toast" + (erro ? " error" : "");
+    t.setAttribute("role", "status");
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.remove(), 2500);
+  }
 
-async function copiarFCA(){
+  /* ---------- Copiar (com fallback para HTTP / WebView) ---------- */
+  async function copiarTexto(texto) {
+    if (navigator.clipboard && window.isSecureContext) {
+      try {
+        await navigator.clipboard.writeText(texto);
+        return true;
+      } catch (e) { /* tenta o fallback */ }
+    }
+    const area = document.createElement("textarea");
+    area.value = texto;
+    area.setAttribute("readonly", "");
+    area.style.cssText = "position:fixed;top:0;left:0;opacity:0";
+    document.body.appendChild(area);
+    area.select();
+    area.setSelectionRange(0, texto.length);
+    let ok = false;
+    try { ok = document.execCommand("copy"); } catch (e) {}
+    area.remove();
+    return ok;
+  }
 
-const texto = gerarTexto();
+  async function copiarFCA() {
+    if (!validar()) return;
+    const ok = await copiarTexto(gerarTexto());
+    toast(ok ? "✅ FCA copiado com sucesso!" : "Não foi possível copiar. Selecione o texto manualmente.", !ok);
+  }
 
-await navigator.clipboard.writeText(texto);
+  function enviarWhatsApp() {
+    if (!validar()) return;
+    const url = "https://wa.me/?text=" + encodeURIComponent(gerarTexto());
+    window.open(url, "_blank", "noopener");
+  }
 
-toast("✅ FCA copiado com sucesso!");
+  /* ---------- Novo FCA ---------- */
+  function novoFCA() {
+    if (!confirm("Limpar todos os campos e começar um novo FCA?")) return;
+    CAMPOS.forEach(c => {
+      const el = $(c.id);
+      if (el.tagName === "SELECT") el.selectedIndex = 0;
+      else el.value = "";
+      el.classList.remove("invalid");
+    });
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
+    gerarTexto();
+    $("ocorrencia").focus();
+  }
 
-}
+  /* ---------- Localização ---------- */
+  function usarLocalizacao() {
+    if (!navigator.geolocation) {
+      toast("Localização não disponível neste aparelho.", true);
+      return;
+    }
+    toast("Buscando localização...");
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const { latitude, longitude } = pos.coords;
+        $("endereco").value = latitude.toFixed(6) + ", " + longitude.toFixed(6);
+        onEditar();
+        toast("📍 Localização inserida.");
+      },
+      () => toast("Não foi possível obter a localização. Verifique a permissão.", true),
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 30000 }
+    );
+  }
 
-gerarTexto();
+  /* ---------- Eventos ---------- */
+  function onEditar(e) {
+    if (e && e.target.classList.contains("invalid") && e.target.value.trim()) {
+      e.target.classList.remove("invalid");
+    }
+    gerarTexto();
+    salvarRascunho();
+  }
 
+  CAMPOS.forEach(c => {
+    // "input" cobre digitação; em <select> o "change" é o evento principal
+    $(c.id).addEventListener("input", onEditar);
+    $(c.id).addEventListener("change", onEditar);
+  });
+
+  $("btnCopiar").addEventListener("click", copiarFCA);
+  $("btnWhats").addEventListener("click", enviarWhatsApp);
+  $("btnLimpar").addEventListener("click", novoFCA);
+  $("btnGps").addEventListener("click", usarLocalizacao);
+
+  /* ---------- Início ---------- */
+  carregarRascunho();
+  gerarTexto();
+})();
 </script>
 
 </body>
